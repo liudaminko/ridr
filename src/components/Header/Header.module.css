@@ -1,0 +1,61 @@
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 80px;
+}
+.userCompound {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+}
+.compound {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+}
+.logInButton,
+.signUpButton {
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.logInButton {
+  border: 2px solid #2b2b2b;
+  background-color: transparent;
+}
+.signUpButton {
+  border: 2px solid #2b2b2b;
+  background-color: #2b2b2b;
+  color: #e2e2e2;
+}
+a {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.phoneCompound {
+  display: flex;
+  flex-direction: column;
+}
+.phone {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.schedule {
+  font-size: 12px;
+}

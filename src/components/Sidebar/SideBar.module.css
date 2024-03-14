@@ -1,0 +1,21 @@
+.container {
+  background-color: white;
+  width: 20%;
+  float: left;
+  padding: 32px;
+}
+.category {
+  cursor: pointer;
+  color: #2b2b2b;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: self-end;
+  padding: 8px 16px;
+}
+p {
+  margin: 0;
+}
+.header {
+  margin-bottom: 16px;
+}
