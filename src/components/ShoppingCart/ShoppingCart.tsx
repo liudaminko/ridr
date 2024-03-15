@@ -1,14 +1,12 @@
 import styles from "./ShoppingCart.module.css";
+import { useModal } from "../../ModalContext";
 
-interface ShoppingCartProps {
-  onClose: () => void;
-}
-
-const ShoppingCart: React.FC<ShoppingCartProps> = ({ onClose }) => {
-  return (
-    <div className={styles.overlay} onClick={onClose}>
+function ShoppingCart() {
+  const { isCartOpen, toggleCart } = useModal();
+  return isCartOpen ? (
+    <div className={styles.overlay} onClick={toggleCart}>
       <div className={styles.cart}>
-        <button className={styles.closeButton} onClick={onClose}>
+        <button className={styles.closeButton} onClick={toggleCart}>
           Close
         </button>
         <h2>Shopping Cart</h2>
@@ -22,7 +20,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ onClose }) => {
         </div>
       </div>
     </div>
-  );
-};
+  ) : null;
+}
 
 export default ShoppingCart;

@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
 import SearchBar from "../SearchBar/SearchBar";
+import { useModal } from "../../ModalContext";
 
-interface HeaderProps {
-  onCartToggle: () => void;
-}
+function Header() {
+  const { toggleCart, toggleLogInPopup, toggleSignUpPopup } = useModal();
 
-const Header: React.FC<HeaderProps> = ({ onCartToggle }) => {
   return (
     <div className={styles.container}>
       <Link to="/">
@@ -28,17 +27,21 @@ const Header: React.FC<HeaderProps> = ({ onCartToggle }) => {
           <img
             src="/shopping-cart.png"
             style={{ height: "24px", cursor: "pointer" }}
-            onClick={onCartToggle}
+            onClick={toggleCart}
             alt="cart"
           />
         </div>
         <div className={styles.compound}>
-          <button className={styles.logInButton}>log in</button>
-          <button className={styles.signUpButton}>sign up</button>
+          <button className={styles.logInButton} onClick={toggleLogInPopup}>
+            log in
+          </button>
+          <button className={styles.signUpButton} onClick={toggleSignUpPopup}>
+            sign up
+          </button>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default Header;

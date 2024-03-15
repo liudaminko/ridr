@@ -9,34 +9,32 @@ import Wishlist from "./pages/Wishlist/Wishlist";
 import PersonalCabinet from "./pages/PersonalCabinet/PersonalCabinet";
 import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
 import BookDetails from "./pages/BookDetails/BookDetails";
+import LogInPopup from "./components/LogInPopup/LogInPopup";
+import SignUpPopup from "./components/SignUpPopup/SignUpPopup";
+import { ModalProvider } from "./ModalContext";
 
 function App() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
-  const toggleCart = () => {
-    setIsCartOpen(!isCartOpen);
-  };
-
   return (
-    <div className="App">
-      <Router>
-        <Header onCartToggle={toggleCart} />{" "}
-        <div style={{ paddingTop: "104px" }}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/catalog" element={<Catalog />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/cabinet" element={<PersonalCabinet />} />
-            <Route path="/book/:id" element={<BookDetails />} />
-          </Routes>
-        </div>
-        <Footer />
-        {isCartOpen && (
-          <div className="cart-overlay" onClick={toggleCart} />
-        )}{" "}
-        {isCartOpen && <ShoppingCart onClose={toggleCart} />}{" "}
-      </Router>
-    </div>
+    <ModalProvider>
+      <div className="App">
+        <Router>
+          <Header />
+          <div style={{ paddingTop: "104px" }}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/catalog" element={<Catalog />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/cabinet" element={<PersonalCabinet />} />
+              <Route path="/book/:id" element={<BookDetails />} />
+            </Routes>
+          </div>
+          <Footer />
+          <ShoppingCart />
+          <LogInPopup />
+          <SignUpPopup />
+        </Router>
+      </div>
+    </ModalProvider>
   );
 }
 
