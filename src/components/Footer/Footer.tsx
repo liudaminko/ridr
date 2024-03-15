@@ -4,7 +4,7 @@ function Footer() {
   return (
     <div className={styles.container}>
       <div className={styles.infoContainer}>
-        <img src="logo.svg" />
+        <img src="/logo.svg" />
         <ul className={styles.column}>
           <li>about</li>
           <li>career</li>

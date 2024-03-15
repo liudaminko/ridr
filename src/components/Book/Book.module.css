@@ -1,9 +1,28 @@
-.container {
+.link {
   display: flex;
-  flex-direction: column;
   width: 18%;
+  text-decoration: none;
 }
 
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.likeBook {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.container:hover .likeBook {
+  opacity: 1;
+}
 .cover {
   display: flex;
   align-items: center;

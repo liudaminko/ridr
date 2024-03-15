@@ -9,7 +9,7 @@ function SearchBar() {
         placeholder="search books, authors, ISBN ..."
       />
       <div className={styles.searchButton}>
-        <img src="search.png" style={{ height: "1rem" }} />
+        <img src="/search.png" style={{ height: "1rem" }} />
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import styles from "./SideBar.module.css";
 
 function SideBar() {
-  const categories = ["classics", "poetry", "fantasy", "nonfiction"];
+  const categories = ["classics", "poetry", "fantasy", "nonfiction", "horror"];
 
   return (
     <div className={styles.container}>
