@@ -44,6 +44,7 @@
   padding: 8px 16px;
   border: none;
   border-radius: 16px;
+  cursor: pointer;
 }
 .active {
   background-color: #a4ae9d;
@@ -92,6 +93,18 @@
   color: #ffffff;
   width: max-content;
   border-radius: 32px;
+}
+.passwordContainer {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+.showPassword {
+  position: absolute;
+  top: 22%;
+  right: 2%;
+  height: 24px;
+  width: 24px;
 }
 .disabled {
   background-color: #e5c7c0;

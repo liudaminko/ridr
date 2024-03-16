@@ -5,6 +5,8 @@ import { useState } from "react";
 function LogInPopup() {
   const { isLogInOpen, toggleLogInPopup, toggleSignUpPopup } = useModal();
   const [logInMethod, setLogInMethod] = useState("phone");
+  const [showPassword, setShowPassword] = useState(false);
+
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,11 +16,19 @@ function LogInPopup() {
   const [passwordError, setPasswordError] = useState("");
 
   const handleSubmitClick = () => {
-    // Set initial error values to empty
+    setPhoneError("");
     setEmailError("");
     setPasswordError("");
 
-    // Check if the user has entered both fields correctly
+    if ("" === phone) {
+      setPhoneError("Please enter your phone");
+      return;
+    }
+    if (!/^\+?\d{10}$/.test(phone)) {
+      setPhoneError("Please enter a valid phone number (start with '+' sign)");
+      return;
+    }
+
     if ("" === email) {
       setEmailError("Please enter your email");
       return;
@@ -62,9 +72,9 @@ function LogInPopup() {
   return isLogInOpen ? (
     <div className={styles.overlay} onClick={toggleLogInPopup}>
       <div className={styles.container} onClick={(e) => e.stopPropagation()}>
-        <h1>Log in</h1>
+        <h1>Log In</h1>
         <img
-          src="close.png"
+          src="/close.png"
           alt="close"
           onClick={toggleLogInPopup}
           className={styles.closeButton}
@@ -124,13 +134,21 @@ function LogInPopup() {
 
           <div className={styles.inputContainer}>
             <p className={styles.inputName}>Password</p>
-            <input
-              type="text"
-              placeholder="enter password"
-              value={password}
-              onChange={(ev) => setPassword(ev.target.value)}
-              className={styles.inputBox}
-            />
+            <div className={styles.passwordContainer}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="enter password"
+                value={password}
+                onChange={(ev) => setPassword(ev.target.value)}
+                className={styles.inputBox}
+              />
+              <img
+                src={showPassword ? "/visible.png" : "/hidden.png"}
+                className={styles.showPassword}
+                onClick={() => setShowPassword(!showPassword)}
+                alt="password visibility"
+              />
+            </div>
             <label className={styles.errorLabel}>{passwordError}</label>
           </div>
         </div>
