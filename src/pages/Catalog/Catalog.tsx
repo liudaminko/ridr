@@ -1,6 +1,7 @@
 import styles from "./Catalog.module.css";
 import CatalogSidebar from "../../components/CatalogSidebar/CatalogSidebar";
 import Book from "../../components/Book/Book";
+import SortingDropdown from "../../components/SortingDropdown/SortingDropdown";
 
 function Catalog() {
   const books = [
@@ -133,10 +134,16 @@ function Catalog() {
       liked: true,
     },
   ];
+
+  const handleSortChange = (option: string) => {
+    console.log("Sorting by", option);
+  };
+
   return (
     <div className={styles.container}>
       <CatalogSidebar />
       <div className={styles.catalogContainer}>
+        <SortingDropdown onSortChange={handleSortChange} />
         <div className={styles.booksContainer}>
           {books.map((book) => (
             <Book

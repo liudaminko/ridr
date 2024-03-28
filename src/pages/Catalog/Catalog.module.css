@@ -10,9 +10,13 @@
   padding: 32px;
   background-color: #ffffff;
   border-radius: 16px;
+  gap: 16px;
 }
 .booksContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+}
+.catalogContainer :first-child {
+  justify-content: right;
 }
