@@ -8,34 +8,6 @@ function BookDetails() {
   const [isFullDescription, setFullDescription] = useState(false);
   const [isBookDetailsOpened, setBookDetailsOpen] = useState(false);
 
-  /*
-  const [bookDetails, setBookDetails] = useState<any>(null);
-
-  
-  useEffect(() => {
-    const fetchBookDetails = async () => {
-      try {
-        const response = await fetch(`whateverlink/books/${id}`);
-        if (response.ok) {
-          const data = await response.json();
-          setBookDetails(data);
-        } else {
-          console.error("Failed to fetch book details");
-        }
-      } catch (error) {
-        console.error("Error fetching book details:", error);
-      }
-    };
-
-    fetchBookDetails();
-  }, [id]);
-
-  if (!bookDetails) {
-    return <div>Loading...</div>;
-  }*/
-  //get this info from request
-  //for now static data to write front
-
   const fullInfoBook = {
     id: 1,
     imageUrl: "9780060935467",

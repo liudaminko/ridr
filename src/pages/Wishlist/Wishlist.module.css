@@ -1,0 +1,147 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 64px;
+  width: 100%;
+  gap: 32px;
+}
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.pageTitle {
+  text-align: left;
+}
+.wishlistsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  background-color: #ffffff;
+  height: min-content;
+  padding: 32px;
+  border-radius: 16px;
+  align-items: flex-start;
+}
+.createWishlist {
+  cursor: pointer;
+  border: none;
+  background-color: #a4ae9d;
+  color: #ffffff;
+  padding: 8px 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.wishlist {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  width: 100%;
+}
+.optionsButton {
+  cursor: pointer;
+  border: none;
+  display: flex;
+  background-color: transparent;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+.modal {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  z-index: 10;
+  border-radius: 8px;
+  padding: 16px;
+  position: absolute;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+}
+.modalOption {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  padding: 8px;
+}
+.wishlistContent {
+  display: flex;
+  flex-direction: column;
+  width: 78%;
+  background-color: #ffffff;
+  height: 100vh;
+  padding: 32px;
+  border-radius: 16px;
+  gap: 16px;
+}
+.wishlistName {
+  text-align: left;
+}
+.wishlistBooks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.modalBackground {
+  width: 100%;
+  height: 100vh;
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.newListModalContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  background-color: #ffffff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 32px 64px;
+}
+
+.inputBox {
+  padding: 8px 32px;
+  width: 100%;
+  font-size: large;
+  border-radius: 8px;
+  background-color: #fafafa;
+  border: 1px solid #f2f2f2;
+  color: #2b2b2b;
+  padding-left: 8px;
+}
+.inputBox:focus-visible {
+  border: 1px solid #a4ae9d;
+  outline: 2px solid #a4ae9d;
+}
+.buttons {
+  width: 100%;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: right;
+}
+.saveButton,
+.cancelButton {
+  cursor: pointer;
+  border: none;
+  border-radius: 16px;
+  padding: 8px 16px;
+}
+.saveButton {
+  background-color: #e3502e;
+}

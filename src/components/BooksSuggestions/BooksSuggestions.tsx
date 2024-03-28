@@ -8,6 +8,7 @@ interface BookType {
   authors: string;
   title: string;
   price: number;
+  liked: boolean;
 }
 
 interface BooksSuggestionsProps {
@@ -62,6 +63,8 @@ function BooksSuggestions({
               authors={book.authors}
               title={book.title}
               price={book.price}
+              liked={book.liked}
+              width="18%"
             />
           ))}
         </div>

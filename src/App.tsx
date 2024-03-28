@@ -9,6 +9,7 @@ import Wishlist from "./pages/Wishlist/Wishlist";
 import PersonalCabinet from "./pages/PersonalCabinet/PersonalCabinet";
 import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
 import BookDetails from "./pages/BookDetails/BookDetails";
+import SearchResults from "./pages/SearchResults/SearchResults";
 import LogInPopup from "./components/LogInPopup/LogInPopup";
 import SignUpPopup from "./components/SignUpPopup/SignUpPopup";
 import { ModalProvider } from "./ModalContext";
@@ -26,6 +27,7 @@ function App() {
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/cabinet" element={<PersonalCabinet />} />
               <Route path="/book/:id" element={<BookDetails />} />
+              <Route path="/search/:q" element={<SearchResults />} />
             </Routes>
           </div>
           <Footer />

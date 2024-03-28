@@ -12,6 +12,7 @@ function Home() {
       authors: "George Orwell",
       title: "1984",
       price: 10,
+      liked: false,
     },
     {
       id: 2,
@@ -19,6 +20,7 @@ function Home() {
       authors: "Harper Lee",
       title: "To Kill a Mockingbird",
       price: 8,
+      liked: false,
     },
     {
       id: 3,
@@ -26,6 +28,7 @@ function Home() {
       authors: "J.K. Rowling",
       title: "Harry Potter and the Philosopher’s Stone",
       price: 15,
+      liked: false,
     },
     {
       id: 4,
@@ -33,6 +36,7 @@ function Home() {
       authors: "Jane Austen",
       title: "Pride and Prejudice",
       price: 6,
+      liked: false,
     },
     {
       id: 5,
@@ -40,6 +44,7 @@ function Home() {
       authors: "Antoine de Saint-Exupéry",
       title: "The Little Prince",
       price: 5,
+      liked: false,
     },
     {
       id: 6,
@@ -47,6 +52,7 @@ function Home() {
       authors: "Charlotte Brontë",
       title: "Jane Eyre",
       price: 10,
+      liked: false,
     },
     {
       id: 7,
@@ -54,6 +60,7 @@ function Home() {
       authors: "Markus Zusak",
       title: "The Book Thief",
       price: 10,
+      liked: false,
     },
     {
       id: 8,
@@ -61,6 +68,7 @@ function Home() {
       authors: "J.R.R. Tolkien",
       title: "The Lord of the Rings",
       price: 10,
+      liked: false,
     },
     {
       id: 9,
@@ -68,6 +76,7 @@ function Home() {
       authors: "J.D. Salinger",
       title: "The Catcher in the Rye",
       price: 10,
+      liked: false,
     },
     {
       id: 10,
@@ -75,6 +84,7 @@ function Home() {
       authors: "F. Scott Fitzgerald",
       title: "The Great Gatsby",
       price: 12,
+      liked: false,
     },
   ];
 
@@ -85,6 +95,7 @@ function Home() {
       authors: "George Orwell",
       title: "1984",
       price: 10,
+      liked: true,
     },
     {
       id: 2,
@@ -92,6 +103,7 @@ function Home() {
       authors: "Harper Lee",
       title: "To Kill a Mockingbird",
       price: 8,
+      liked: true,
     },
     {
       id: 3,
@@ -99,6 +111,7 @@ function Home() {
       authors: "J.K. Rowling",
       title: "Harry Potter and the Philosopher’s Stone",
       price: 15,
+      liked: false,
     },
     {
       id: 4,
@@ -106,6 +119,7 @@ function Home() {
       authors: "Jane Austen",
       title: "Pride and Prejudice",
       price: 6,
+      liked: false,
     },
     {
       id: 5,
@@ -113,6 +127,7 @@ function Home() {
       authors: "Antoine de Saint-Exupéry",
       title: "The Little Prince",
       price: 5,
+      liked: false,
     },
     {
       id: 6,
@@ -120,6 +135,7 @@ function Home() {
       authors: "Charlotte Brontë",
       title: "Jane Eyre",
       price: 10,
+      liked: false,
     },
     {
       id: 7,
@@ -127,6 +143,7 @@ function Home() {
       authors: "Markus Zusak",
       title: "The Book Thief",
       price: 10,
+      liked: false,
     },
     {
       id: 8,
@@ -134,6 +151,7 @@ function Home() {
       authors: "J.R.R. Tolkien",
       title: "The Lord of the Rings",
       price: 10,
+      liked: false,
     },
     {
       id: 9,
@@ -141,6 +159,7 @@ function Home() {
       authors: "J.D. Salinger",
       title: "The Catcher in the Rye",
       price: 10,
+      liked: true,
     },
     {
       id: 10,
@@ -148,6 +167,7 @@ function Home() {
       authors: "F. Scott Fitzgerald",
       title: "The Great Gatsby",
       price: 12,
+      liked: false,
     },
   ];
 

@@ -20,20 +20,97 @@
   background-color: white;
   padding: 32px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
 .closeButton {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 16px;
+  right: 16px;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 16px;
-  color: #555;
+  padding: 0;
 }
 
 h2 {
   margin-top: 0;
   font-size: 20px;
+}
+.itemsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.item {
+  display: flex;
+  width: 100%;
+  padding: 0 16px;
+}
+.cover {
+  width: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 0;
+}
+.itemImage {
+  height: 160px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+}
+.infoContainer {
+  width: 60%;
+  padding: 16px;
+  background-color: #f2f2f2;
+}
+
+.createOrderButton {
+  cursor: pointer;
+  background-color: #e3502e;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 36px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.quantityContainer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: left;
+}
+.decreaseQuantityButton,
+.increaseQuantityButton {
+  cursor: pointer;
+  font-weight: 600;
+  height: 24px;
+  width: 24px;
+  background-color: transparent;
+  border-radius: 12px;
+  border: 1.5px solid #2b2b2b;
+  color: #2b2b2b;
+}
+.disabled {
+  border: 2px solid #898989;
+  color: #898989;
+}
+.title,
+.author,
+.price {
+  display: flex;
+  justify-content: left;
+}
+.title {
+  font-weight: 600;
+}
+.author {
+  color: #898989;
+  font-size: 14px;
 }

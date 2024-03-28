@@ -7,31 +7,46 @@ interface BookProps {
   authors: string;
   title: string;
   price: number;
+  liked: boolean;
+  width: string;
 }
 
-function Book({ id, imageUrl, authors, title, price }: BookProps) {
+function Book({
+  id,
+  imageUrl,
+  authors,
+  title,
+  price,
+  liked,
+  width,
+}: BookProps) {
   const handleLikeClick = (event: React.MouseEvent<HTMLImageElement>) => {
-    event.stopPropagation(); // Prevent the click event from bubbling up to the parent container
+    event.stopPropagation();
     event.preventDefault();
-    console.log("Liked:", id); // Log the ID of the item
+    console.log("Liked:", id);
   };
 
   return (
-    <Link to={`/book/${id}`} className={styles.link}>
+    <Link to={`/book/${id}`} className={styles.link} style={{ width }}>
       <div className={styles.container}>
-        <img
-          src="/like.png"
-          className={styles.likeBook}
-          alt="like"
-          onClick={handleLikeClick}
-        />
-        <div className={styles.cover}>
+        {liked ? (
           <img
-            src={imageUrl}
-            alt="cover"
-            className={styles.coverImage}
-            style={{ height: "160px" }}
+            src="/liked.png"
+            className={styles.likeBook}
+            alt="liked"
+            onClick={handleLikeClick}
           />
+        ) : (
+          <img
+            src="/like.png"
+            className={styles.likeBook}
+            alt="like"
+            onClick={handleLikeClick}
+          />
+        )}
+
+        <div className={styles.cover}>
+          <img src={imageUrl} alt="cover" className={styles.coverImage} />
         </div>
         <div className={styles.info}>
           <p className={styles.author}>{authors}</p>
