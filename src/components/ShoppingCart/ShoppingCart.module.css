@@ -43,6 +43,8 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 75%;
+  overflow-y: auto;
 }
 .item {
   display: flex;
@@ -64,6 +66,9 @@ h2 {
   width: 60%;
   padding: 16px;
   background-color: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .createOrderButton {
@@ -113,4 +118,21 @@ h2 {
 .author {
   color: #898989;
   font-size: 14px;
+}
+.deleteItemButton {
+  color: #e3502e;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #e3502e;
+  display: flex;
+  width: min-content;
+  padding: 4px 16px;
+  cursor: pointer;
+}
+
+.total {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
 }

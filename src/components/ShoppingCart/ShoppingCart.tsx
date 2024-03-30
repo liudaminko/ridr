@@ -26,6 +26,24 @@ function ShoppingCart() {
         price: 9,
         bookSequence: 2,
       },
+      {
+        id: 3,
+        image: "/9780060935467.jpeg",
+        title: "1984",
+        authors: ["George Orwell"],
+        quantity: 1,
+        price: 12,
+        bookSequence: 1,
+      },
+      {
+        id: 4,
+        image: "/9780140434262.jpeg",
+        title: "To Kill a Mockingbird",
+        authors: ["Harper Lee", "lets imagine"],
+        quantity: 1,
+        price: 9,
+        bookSequence: 2,
+      },
     ],
   });
 
@@ -55,7 +73,7 @@ function ShoppingCart() {
 
   return isCartOpen ? (
     <div className={styles.overlay} onClick={toggleCart}>
-      <div className={styles.cart}>
+      <div className={styles.cart} onClick={(e) => e.stopPropagation()}>
         <button className={styles.closeButton} onClick={toggleCart}>
           <img src="/close.png" height={"20px"} alt="close" />
         </button>
@@ -84,6 +102,7 @@ function ShoppingCart() {
                       handleQuantityChange(item.id, item.quantity - 1)
                     }
                     className={styles.decreaseQuantityButton}
+                    disabled={item.quantity === 1}
                   >
                     -
                   </button>
@@ -98,7 +117,10 @@ function ShoppingCart() {
                   </button>
                 </div>
                 <div className={styles.price}>Price: ${item.price}</div>
-                <button onClick={() => handleDeleteItem(item.id)}>
+                <button
+                  onClick={() => handleDeleteItem(item.id)}
+                  className={styles.deleteItemButton}
+                >
                   Delete
                 </button>
               </div>
