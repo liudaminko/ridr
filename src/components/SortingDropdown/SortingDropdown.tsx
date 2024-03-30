@@ -14,6 +14,7 @@ function SortingDropdown({ onSortChange }: Props) {
     if (onSortChange) {
       onSortChange(option);
     }
+    setShowOptions(!showOptions);
   };
 
   const handleToggleOptions = () => {

@@ -17,6 +17,32 @@
   flex-wrap: wrap;
   justify-content: space-between;
 }
-.catalogContainer :first-child {
+.catalogContainer :first-child > {
   justify-content: right;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.filtersContainer {
+  display: flex;
+  justify-content: left;
+  flex-wrap: wrap;
+  width: 75%;
+  gap: 16px;
+}
+.filter {
+  background-color: #e3502e;
+  color: #ffffff;
+  padding: 8px 24px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.filter p {
+  color: #ffffff;
 }

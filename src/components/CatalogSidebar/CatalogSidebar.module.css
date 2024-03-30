@@ -35,7 +35,6 @@
   gap: 8px;
 }
 .checkbox {
-  appearance: none;
   margin: 0;
   background-color: #fafafa;
   border: 1px solid #f2f2f2;
@@ -43,17 +42,4 @@
   width: 1.5em;
   height: 1.5em;
   border-radius: 0.15em;
-}
-
-.checkbox::before {
-  content: "";
-  width: 0.65em;
-  height: 0.65em;
-  transform: scale(0);
-  transition: 120ms transform ease-in-out;
-  box-shadow: inset 1em 1em var(--form-control-color);
-}
-
-.checkbox:checked::before {
-  transform: scale(1);
 }

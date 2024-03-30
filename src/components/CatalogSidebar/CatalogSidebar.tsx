@@ -1,8 +1,29 @@
+import { useEffect, useState } from "react";
 import styles from "./CatalogSidebar.module.css";
 
-function CatalogSidebar() {
+export interface FilterItem {
+  id: number;
+  name: string;
+}
+
+interface Filters {
+  publisher: FilterItem[];
+  author: FilterItem[];
+  language: FilterItem[];
+  genre: FilterItem[];
+}
+
+interface CatalogSidebarProps {
+  onFiltersChange: (filters: Filters) => void;
+  onFilterRemove: (filterType: keyof Filters, filterId: number) => void;
+}
+
+function CatalogSidebar({
+  onFiltersChange,
+  onFilterRemove,
+}: CatalogSidebarProps) {
   const filters = {
-    publishers: [
+    publisher: [
       {
         id: 1,
         name: "Penguin",
@@ -52,7 +73,7 @@ function CatalogSidebar() {
         name: "Random House",
       },
     ],
-    authors: [
+    author: [
       {
         id: 1,
         name: "George Orwell",
@@ -62,7 +83,7 @@ function CatalogSidebar() {
         name: "Allan Pou",
       },
     ],
-    languages: [
+    language: [
       {
         id: 1,
         name: "English",
@@ -72,6 +93,61 @@ function CatalogSidebar() {
         name: "Spanish",
       },
     ],
+    genre: [
+      {
+        id: 1,
+        name: "horror",
+      },
+      {
+        id: 2,
+        name: "romance",
+      },
+      {
+        id: 3,
+        name: "history",
+      },
+      {
+        id: 4,
+        name: "poetry",
+      },
+      {
+        id: 5,
+        name: "science fiction",
+      },
+      {
+        id: 6,
+        name: "biography",
+      },
+    ],
+  };
+  const [selectedFilters, setSelectedFilters] = useState({
+    publisher: [],
+    author: [],
+    language: [],
+    genre: [],
+  });
+
+  const handleFilterChange = (
+    filterType: string,
+    filterId: number,
+    filterName: string,
+    checked: boolean
+  ) => {
+    setSelectedFilters((prevFilters) => ({
+      ...prevFilters,
+      [filterType as keyof Filters]: checked
+        ? [
+            ...(prevFilters[filterType as keyof Filters] || []),
+            { id: filterId, name: filterName },
+          ]
+        : (prevFilters[filterType as keyof Filters] || []).filter(
+            (filter: FilterItem) => filter.id !== filterId
+          ),
+    }));
+  };
+
+  const applyFilters = () => {
+    onFiltersChange(selectedFilters);
   };
 
   return (
@@ -82,15 +158,23 @@ function CatalogSidebar() {
           <div key={filterType} className={styles.filters}>
             <p className={styles.filterName}>{filterType}</p>
             <div className={styles.filtersContainer}>
-              {filterItems.map((filterItem) => (
+              {filterItems.map((filterItem: FilterItem) => (
                 <div key={filterItem.id} className={styles.filter}>
                   <input
                     type="checkbox"
-                    id={filterItem.id.toString()}
+                    id={`${filterType}-${filterItem.id}`} // Prefix the id with filterType
                     name={filterType}
                     className={styles.checkbox}
+                    onChange={(e) =>
+                      handleFilterChange(
+                        filterType,
+                        filterItem.id,
+                        filterItem.name,
+                        e.target.checked
+                      )
+                    }
                   />
-                  <label htmlFor={filterItem.id.toString()}>
+                  <label htmlFor={`${filterType}-${filterItem.id}`}>
                     {filterItem.name}
                   </label>
                 </div>
@@ -99,6 +183,7 @@ function CatalogSidebar() {
           </div>
         ))}
       </div>
+      <button onClick={applyFilters}>Apply Filters</button>
     </div>
   );
 }
