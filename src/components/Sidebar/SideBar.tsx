@@ -5,7 +5,7 @@ function SideBar() {
 
   return (
     <div className={styles.container}>
-      <h3 className={styles.header}>categories</h3>
+      <h3 className={styles.header}>top genres</h3>
       {categories.map((category, index) => (
         <div key={index} className={styles.category}>
           <p>{category}</p>

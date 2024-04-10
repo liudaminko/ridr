@@ -162,7 +162,7 @@ function CatalogSidebar({
                 <div key={filterItem.id} className={styles.filter}>
                   <input
                     type="checkbox"
-                    id={`${filterType}-${filterItem.id}`} // Prefix the id with filterType
+                    id={`${filterType}-${filterItem.id}`}
                     name={filterType}
                     className={styles.checkbox}
                     onChange={(e) =>

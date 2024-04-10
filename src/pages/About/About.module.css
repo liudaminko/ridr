@@ -1,0 +1,49 @@
+.container {
+  width: 100%;
+  padding: 32px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.pageHeader {
+  width: 100%;
+  text-align: left;
+}
+.aboutMeContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  padding: 0 120px;
+  justify-content: space-between;
+}
+
+.creatorPhoto {
+  width: 32%;
+}
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tag {
+  padding: 8px 16px;
+  border: 2px solid #2b2b2b;
+  font-weight: 500;
+  border-radius: 20px;
+  width: max-content;
+}
+.mainInfo {
+  display: flex;
+  width: 100%;
+  gap: 16px;
+  align-items: center;
+}
+.socialMediaContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+.links {
+  height: 32px;
+}

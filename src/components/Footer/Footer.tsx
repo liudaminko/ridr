@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styles from "./Footer.module.css";
 
 function Footer() {
@@ -6,7 +7,9 @@ function Footer() {
       <div className={styles.infoContainer}>
         <img src="/logo.svg" />
         <ul className={styles.column}>
-          <li>about</li>
+          <Link to="/about">
+            <li>about</li>
+          </Link>
           <li>career</li>
           <li>contact</li>
         </ul>
