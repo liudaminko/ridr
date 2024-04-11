@@ -1,9 +1,16 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+/front/node_modules
 /.pnp
 .pnp.js
+.idea
+/back/.mvn
+/back/.gitignore
+/back/.idea
+/back/pom.xml
+/back/mvnw
+/back/mvnw.cmd
 
 # testing
 /coverage

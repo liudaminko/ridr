@@ -1,0 +1,28 @@
+.dropdownContainer {
+    background-color: #ffffff;
+    position: absolute;
+    top: 70px;
+    padding: 0;
+    margin: 0;
+    right: 60px;
+    z-index: 10;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdownOption {
+    width: 100%;
+    margin: 0;
+    padding: 8px 24px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    cursor: pointer;
+}
+.dropdownOption:hover {
+    background-color: #fbfbfb;
+}
