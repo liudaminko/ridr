@@ -1,40 +1,72 @@
 import styles from "./BookDetails.module.css";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddToCartButton from "../../components/AddToCartButton/AddToCartButton";
+
+interface Author {
+  id: number;
+  name: string;
+}
+
+interface Genre {
+  id: number;
+  name: string;
+}
+
+interface Publisher {
+  id: number;
+  name: string;
+}
+
+interface BookDetails {
+  id: number;
+  imageUrl: string;
+  title: string;
+  authors: Author[];
+  description: string;
+  price: number;
+  genre: Genre;
+  pages: number;
+  publicationYear: number;
+  publisher: Publisher;
+  ISBN: number;
+  language: string;
+}
 
 function BookDetails() {
   const { id } = useParams<{ id: string }>();
   const [isFullDescription, setFullDescription] = useState(false);
   const [isBookDetailsOpened, setBookDetailsOpen] = useState(false);
+  const [bookDetails, setBookDetails] = useState<BookDetails | null>(null);
 
-  const fullInfoBook = {
-    id: 1,
-    imageUrl: "9780060935467",
-    title: "To Kill A Mockingbird",
-    authors: [
-      {
-        id: 1,
-        name: "Harper Lee",
-      },
-      {
-        id: 2,
-        name: "",
-      },
-    ],
-    description:
-      'The unforgettable novel of a childhood in a sleepy Southern town and the crisis of conscience that rocked it. "To Kill A Mockingbird" became both an instant bestseller and a critical success when it was first published in 1960. It went on to win the Pulitzer Prize in 1961 and was later made into an Academy Award-winning film, also a classic.Compassionate, dramatic, and deeply moving, "To Kill A Mockingbird" takes readers to the roots of human behavior - to innocence and experience, kindness and cruelty, love and hatred, humor and pathos. Now with over 18 million copies in print and translated into forty languages, this regional story by a young Alabama woman claims universal appeal. Harper Lee always considered her book to be a simple love story. Today it is regarded as a masterpiece of American literature.',
-    price: 10,
-    genre: "classics",
-    pages: 336,
-    publicationYear: 2016,
-    publisher: {
-      id: 1,
-      name: "Perennial Classics",
-    },
-    ISBN: 935923058203,
-    language: "eng",
-  };
+  useEffect(() => {
+    console.log("requesting...");
+    const fetchBookDetails = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/catalog/fullinfo?bookId=${id}`
+        );
+        console.log(id);
+        if (response.ok) {
+          const data = await response.json();
+          const parsedData = {
+            ...data,
+            authors: JSON.parse(data.authors),
+            genre: JSON.parse(data.genre),
+            publisher: JSON.parse(data.publisher),
+          };
+          setBookDetails(parsedData);
+        } else {
+          console.error("Failed to fetch book details:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching book details:", error);
+      }
+    };
+
+    fetchBookDetails();
+  }, [id]);
+
   const bookAvailability = {
     available: true,
   };
@@ -47,11 +79,11 @@ function BookDetails() {
   };
 
   const handleAddToCartClick = () => {
-    console.log("added to cart:", fullInfoBook.id);
+    console.log("added to cart:", bookDetails?.id);
   };
 
   const handleLikeButtonClick = () => {
-    console.log("liked:", fullInfoBook.id);
+    console.log("liked:", bookDetails?.id);
   };
 
   return (
@@ -66,11 +98,11 @@ function BookDetails() {
       </div>
       <div className={styles.infoContainer}>
         <h3 className={styles.bookPath}>
-          All books / Fiction / Classics / {fullInfoBook.title}
+          All books / Fiction / Classics / {bookDetails?.title}
         </h3>
         <div className={styles.mainInfo}>
-          <h1 className={styles.title}>{fullInfoBook.title}</h1>
-          {fullInfoBook.authors.map((author, index) => (
+          <h1 className={styles.title}>{bookDetails?.title}</h1>
+          {bookDetails?.authors.map((author, index) => (
             <h2 key={index} className={styles.author}>
               {author.name}
             </h2>
@@ -81,9 +113,9 @@ function BookDetails() {
             className={styles.description}
             style={{ height: isFullDescription ? "auto" : "84px" }}
           >
-            {fullInfoBook.description}
+            {bookDetails?.description}
           </p>
-          {fullInfoBook.description.length > 200 && (
+          {bookDetails?.description && bookDetails.description.length > 200 && (
             <div
               className={styles.viewMoreButton}
               onClick={handleViewMoreClick}
@@ -118,29 +150,29 @@ function BookDetails() {
               <div className={styles.details}>
                 <div className={styles.detail}>
                   <p className={styles.characteristicsName}>Genre</p>
-                  <p>{fullInfoBook.genre}</p>
+                  <p>{bookDetails?.genre.name}</p>
                 </div>
                 <div className={styles.detail}>
                   <p className={styles.characteristicsName}>Publish date</p>
-                  <p>{fullInfoBook.publicationYear}</p>
+                  <p>{bookDetails?.publicationYear}</p>
                 </div>
                 <div className={styles.detail}>
                   <p className={styles.characteristicsName}>Publisher</p>
-                  <p>{fullInfoBook.publisher.name}</p>
+                  <p>{bookDetails?.publisher.name}</p>
                 </div>
               </div>
               <div className={styles.details}>
                 <div className={styles.detail}>
                   <p className={styles.characteristicsName}>Pages</p>
-                  <p>{fullInfoBook.pages}</p>
+                  <p>{bookDetails?.pages}</p>
                 </div>
                 <div className={styles.detail}>
                   <p className={styles.characteristicsName}>Language</p>
-                  <p>{fullInfoBook.language}</p>
+                  <p>{bookDetails?.language}</p>
                 </div>
                 <div className={styles.detail}>
                   <p className={styles.characteristicsName}>ISBN</p>
-                  <p>{fullInfoBook.ISBN}</p>
+                  <p>{bookDetails?.ISBN}</p>
                 </div>
               </div>
             </div>
@@ -166,7 +198,7 @@ function BookDetails() {
               <h2>OUT OF STOCK</h2>
             </div>
           )}
-          <h1 className={styles.characteristicsName}>${fullInfoBook.price}</h1>
+          <h1 className={styles.characteristicsName}>${bookDetails?.price}</h1>
           <div className={styles.actionButtons}>
             <AddToCartButton onClick={handleAddToCartClick} />
             <button

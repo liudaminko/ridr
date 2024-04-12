@@ -51,6 +51,7 @@ function LogInPopup() {
       setPasswordError("The password must be 8 characters or longer");
       return;
     }
+
     try {
       const response = await fetch(
         `http://localhost:8080/user/login/${logInMethod}`,
@@ -72,9 +73,10 @@ function LogInPopup() {
         localStorage.setItem("userId", data);
         setUserId(data);
         toggleLogInPopup();
-        console.log(response);
+        console.log("Login successful:", data); // Log success response
       } else {
-        console.log(response);
+        const errorData = await response.json(); // Log error response
+        console.error("Login failed:", errorData);
       }
     } catch (error) {
       console.error("Error logging in:", error);

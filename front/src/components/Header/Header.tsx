@@ -23,7 +23,7 @@ function Header() {
     if (storedUserId) {
       setUserId(storedUserId);
     }
-  }, []);
+  }, [userId, localStorage]);
 
   const handleOptionClick = (option: string) => {
     console.log("Clicked:", option);
@@ -36,7 +36,6 @@ function Header() {
     } else {
       localStorage.removeItem("userId");
       setUserId(null);
-      navigation("/");
     }
   };
 

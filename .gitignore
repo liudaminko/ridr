@@ -2,15 +2,19 @@
 
 # dependencies
 /front/node_modules
+/front/package-lock.json
 /.pnp
 .pnp.js
 .idea
+/back/.idea
 /back/.mvn
 /back/.gitignore
-/back/.idea
-/back/pom.xml
+/back/back.iml
+/back/HELP.md
 /back/mvnw
 /back/mvnw.cmd
+/back/pom.xml
+
 
 # testing
 /coverage

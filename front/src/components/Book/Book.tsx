@@ -20,6 +20,10 @@ function Book({
   liked,
   width,
 }: BookProps) {
+  if (imageUrl) {
+    imageUrl = imageUrl.replace(/"/g, "");
+  }
+
   const handleLikeClick = (event: React.MouseEvent<HTMLImageElement>) => {
     event.stopPropagation();
     event.preventDefault();
