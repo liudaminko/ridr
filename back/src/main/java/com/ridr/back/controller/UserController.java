@@ -37,7 +37,7 @@ public class UserController {
     }
     @PostMapping("/login/phone")
     public ResponseEntity<Integer> loginUserPhone(@RequestBody User request) {
-        String phone = request.getPhone();
+        String phone = request.getPhoneNumber();
         String password = request.getPassword();
 
         if (phone == null || password == null) {

@@ -7,7 +7,7 @@ function Footer() {
       <div className={styles.infoContainer}>
         <img src="/logo.svg" />
         <ul className={styles.column}>
-          <Link to="/about">
+          <Link to="/about" className={styles.link}>
             <li>about</li>
           </Link>
           <li>career</li>

@@ -1,14 +1,12 @@
-.link {
-  display: flex;
-  text-decoration: none;
-  margin-bottom: 4vh;
-}
+
 
 .container {
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-bottom: 4vh;
+
 }
 .likeBook {
   position: absolute;

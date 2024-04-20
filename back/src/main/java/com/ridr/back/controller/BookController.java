@@ -31,6 +31,11 @@ public class BookController {
         return repository.getFullInfoBook(bookId);
     }
 
+    @GetMapping("/search")
+    public List<ShortInfoBook> findAnyBooks(@RequestParam String keywords) {
+        return repository.findAnyBooksFilter(keywords);
+    }
+
 //    @PostMapping("/like")
 //    public ShortInfoBook AddToWishlist(@RequestBody Map<String, Object> payload) {
 //        Integer wishlistId = (Integer) payload.get("wishlistId");

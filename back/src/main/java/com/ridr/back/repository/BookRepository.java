@@ -62,6 +62,18 @@ public class BookRepository {
         return jdbcTemplate.queryForObject(query, new Object[]{bookId}, new BeanPropertyRowMapper<>(FullInfoBook.class));
     }
 
+    public List<ShortInfoBook> findAnyBooksFilter(String keywords) {
+        String query = "SELECT DISTINCT b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price " +
+                "FROM Book b " +
+                "JOIN Book_Authors ba ON ba.book_id = b.id " +
+                "JOIN Author a ON a.id = ba.author_id " +
+                "WHERE b.title LIKE ? OR CONCAT(a.first_name, ' ', a.last_name) LIKE ? OR b.isbn LIKE ? " +
+                "ORDER BY b.id";
+
+        return jdbcTemplate.query(query, new Object[]{"%" + keywords + "%", "%" + keywords + "%", "%" + keywords + "%"}, new BeanPropertyRowMapper<>(ShortInfoBook.class));
+    }
+
+
 //    public ShortInfoBook addBookToWishlist(Integer wishlistId, Integer userId, Integer bookId) {
 //        //insert into book_wishlist
 //        String query = "INSERT INTO Book_Wishlist ";

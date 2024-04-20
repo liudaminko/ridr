@@ -19,13 +19,13 @@ public class UserRepository {
         int newId = (maxId != null) ? maxId + 1 : 1;
 
         String uniqueCheckQuery = "SELECT COUNT(*) FROM Customer WHERE email = ? OR phone_number = ?";
-        int count = jdbcTemplate.queryForObject(uniqueCheckQuery, Integer.class, user.getEmail(), user.getPhone());
+        int count = jdbcTemplate.queryForObject(uniqueCheckQuery, Integer.class, user.getEmail(), user.getPhoneNumber());
         if (count > 0) {
             return null;
         }
 
         String insertQuery = "INSERT INTO Customer (id, first_name, last_name, email, phone_number, password, birth_date, sex) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(insertQuery, newId, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone(), user.getPassword(), user.getBirthDate(), user.getGender());
+        jdbcTemplate.update(insertQuery, newId, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber(), user.getPassword(), user.getBirthDate(), user.getGender());
 
         user.setId(newId);
 
