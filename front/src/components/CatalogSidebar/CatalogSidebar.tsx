@@ -22,104 +22,51 @@ function CatalogSidebar({
   onFiltersChange,
   onFilterRemove,
 }: CatalogSidebarProps) {
-  const filters = {
-    publisher: [
-      {
-        id: 1,
-        name: "Penguin",
-      },
-      {
-        id: 2,
-        name: "Meredian Chernowitz",
-      },
-      {
-        id: 3,
-        name: "Random House",
-      },
-      {
-        id: 4,
-        name: "Hodder",
-      },
-      {
-        id: 5,
-        name: "Bloomsburry",
-      },
-      {
-        id: 6,
-        name: "Видавництво Старого Лева",
-      },
-      {
-        id: 7,
-        name: "HarperCollins Publishers",
-      },
-      {
-        id: 8,
-        name: "Meredian Chernowitz",
-      },
-      {
-        id: 9,
-        name: "Random House",
-      },
-      {
-        id: 10,
-        name: "Penguin",
-      },
-      {
-        id: 11,
-        name: "Meredian Chernowitz",
-      },
-      {
-        id: 12,
-        name: "Random House",
-      },
-    ],
-    author: [
-      {
-        id: 1,
-        name: "George Orwell",
-      },
-      {
-        id: 2,
-        name: "Allan Pou",
-      },
-    ],
-    language: [
-      {
-        id: 1,
-        name: "English",
-      },
-      {
-        id: 2,
-        name: "Spanish",
-      },
-    ],
-    genre: [
-      {
-        id: 1,
-        name: "horror",
-      },
-      {
-        id: 2,
-        name: "romance",
-      },
-      {
-        id: 3,
-        name: "history",
-      },
-      {
-        id: 4,
-        name: "poetry",
-      },
-      {
-        id: 5,
-        name: "science fiction",
-      },
-      {
-        id: 6,
-        name: "biography",
-      },
-    ],
-  };
+  const [filters, setFilters] = useState<Filters>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const responsePublisher = await fetch(
+          "http://localhost:8080/publisher"
+        );
+        const dataPublisher = await responsePublisher.json();
+        const responseLanguage = await fetch("http://localhost:8080/language");
+        const dataLanguage = await responseLanguage.json();
+        console.log(dataLanguage);
+        const responseGenre = await fetch("http://localhost:8080/genre");
+        const dataGenre = await responseGenre.json();
+        const responseAuthor = await fetch("http://localhost:8080/author");
+        const dataAuthor = await responseAuthor.json();
+
+        const mappedLanguages = dataLanguage.map(
+          (language: { name: string }, index: number) => ({
+            id: index + 1,
+            name: language.name,
+          })
+        );
+
+        const mappedAuthors = dataAuthor.map(
+          (author: { id: number; firstName: string; lastName: string }) => ({
+            id: author.id,
+            name: author.firstName + " " + author.lastName,
+          })
+        );
+
+        setFilters({
+          publisher: dataPublisher,
+          author: mappedAuthors,
+          language: mappedLanguages,
+          genre: dataGenre,
+        });
+      } catch (error) {
+        console.error("Error fetching filter data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const [selectedFilters, setSelectedFilters] = useState({
     publisher: [],
     author: [],
@@ -154,36 +101,41 @@ function CatalogSidebar({
     <div className={styles.container}>
       <h3>Filters</h3>
       <div className={styles.filterContainer}>
-        {Object.entries(filters).map(([filterType, filterItems]) => (
-          <div key={filterType} className={styles.filters}>
-            <p className={styles.filterName}>{filterType}</p>
-            <div className={styles.filtersContainer}>
-              {filterItems.map((filterItem: FilterItem) => (
-                <div key={filterItem.id} className={styles.filter}>
-                  <input
-                    type="checkbox"
-                    id={`${filterType}-${filterItem.id}`}
-                    name={filterType}
-                    className={styles.checkbox}
-                    onChange={(e) =>
-                      handleFilterChange(
-                        filterType,
-                        filterItem.id,
-                        filterItem.name,
-                        e.target.checked
-                      )
-                    }
-                  />
-                  <label htmlFor={`${filterType}-${filterItem.id}`}>
-                    {filterItem.name}
-                  </label>
-                </div>
-              ))}
+        {filters &&
+          Object.entries(filters).map(([filterType, filterItems]) => (
+            <div key={filterType} className={styles.filters}>
+              <p className={styles.filterName}>{filterType}</p>
+              <div className={styles.filtersContainer}>
+                {filterItems.map((filterItem: FilterItem) => (
+                  <div key={filterItem.id} className={styles.filter}>
+                    <input
+                      type="checkbox"
+                      id={`${filterType}-${filterItem.id}`}
+                      name={filterType}
+                      className={styles.checkbox}
+                      onChange={(e) =>
+                        handleFilterChange(
+                          filterType,
+                          filterItem.id,
+                          filterItem.name,
+                          e.target.checked
+                        )
+                      }
+                    />
+                    <label htmlFor={`${filterType}-${filterItem.id}`}>
+                      {filterItem.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
-      <button onClick={applyFilters}>Apply Filters</button>
+      <div className={styles.buttonContainer}>
+        <button onClick={applyFilters} className={styles.applyFiltersButton}>
+          Apply Filters
+        </button>
+      </div>
     </div>
   );
 }

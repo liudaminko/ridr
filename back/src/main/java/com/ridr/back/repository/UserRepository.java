@@ -1,5 +1,6 @@
 package com.ridr.back.repository;
 
+import com.ridr.back.model.FullInfoBook;
 import com.ridr.back.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -47,5 +48,11 @@ public class UserRepository {
         } catch (Exception e) {
             return -1;
         }
+    }
+
+    public User getUserById(int userId) {
+        String query = "SELECT first_name, last_name, email, phone_number from Customer " +
+                "WHERE id = ?";
+        return jdbcTemplate.queryForObject(query, new Object[]{userId}, new BeanPropertyRowMapper<>(User.class));
     }
 }

@@ -1,0 +1,339 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 32px 64px;
+    gap: 32px;
+}
+.container {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+.orderDetails {
+    width: 60%;
+    background-color: #ffffff;
+    height: 100%;
+    border-radius: 32px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.orderContentContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 75%;
+    overflow-y: auto;
+    width: 35%;
+    background-color: #ffffff;
+    border-radius: 32px;
+    padding: 32px;
+    align-items: center;
+    position: relative;
+  }
+  .item {
+    display: flex;
+    width: 100%;
+    padding: 0 16px;
+  }
+  .cover {
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 0;
+  }
+  .itemImage {
+    height: 160px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  .infoContainer {
+    width: 60%;
+    padding: 16px;
+    background-color: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .createOrderButton {
+    cursor: pointer;
+    background-color: #e3502e;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 36px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .quantityContainer {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: left;
+  }
+  .decreaseQuantityButton,
+  .increaseQuantityButton {
+    cursor: pointer;
+    font-weight: 600;
+    height: 24px;
+    width: 24px;
+    background-color: transparent;
+    border-radius: 12px;
+    border: 1.5px solid #2b2b2b;
+    color: #2b2b2b;
+  }
+  .disabled {
+    border: 2px solid #898989;
+    color: #898989;
+  }
+  .title,
+  .author,
+  .price {
+    display: flex;
+    justify-content: left;
+  }
+  .title {
+    font-weight: 600;
+  }
+  .author {
+    color: #898989;
+    font-size: 14px;
+  }
+  .deleteItemButton {
+    color: #e3502e;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #e3502e;
+    display: flex;
+    width: min-content;
+    padding: 4px 16px;
+    cursor: pointer;
+  }
+  .userInfoContainer, .additionalInputs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+  .inputName {
+    font-weight: 600;
+  }
+  .inputContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    flex: 1;
+  
+  }
+  .inputContainer > .errorLabel {
+    color: red;
+    font-size: 12px;
+  }
+  .fullName {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .inputBox {
+    padding: 8px 32px;
+    z-index: 5;
+    width: 100%;
+    font-size: large;
+    border-radius: 8px;
+    background-color: #fafafa;
+    border: 1px solid #f2f2f2;
+    color: #2b2b2b;
+    padding-left: 8px;
+  }
+  .inputBox:focus-visible {
+    border: 1px solid #a4ae9d;
+    outline: 2px solid #a4ae9d;
+  }
+
+.deliveryContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.deliveryServiceContainer, .deliveryTypesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+.serviceProvider {
+  padding: 8px 16px;
+  background-color: #f2f2f2;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+label {
+  font-weight: 500;
+}
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+.userFullName {
+  display: flex;
+  justify-content: space-between;
+  width: 30%;
+}
+.userInfoItem{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+.userInfoTitle {
+  font-weight: 500;
+}
+.recipientSwitch {
+  width: 100%;
+  display: flex;
+  gap: 16px;
+  justify-content: left;
+}
+.formControl {
+  font-family: system-ui, sans-serif;
+  line-height: 1.1;
+  display: grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+  display: flex;
+  align-items: center;
+}
+input[type="checkbox"] {
+  appearance: none;
+  background-color: transparent;
+  margin: 0;
+  font: inherit;
+  color: #e3502e;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e3502e;
+  border-radius: 10px;
+  display: grid;
+  place-content: center;
+}
+
+.formControl + .formControl {
+  margin-top: 1em;
+}
+input[type="checkbox"]::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em #e3502e;
+  border-radius: 6px;
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+input[type="radio"] {
+  appearance: none;
+  background-color: transparent;
+  margin: 0;
+  font: inherit;
+  color: #e3502e;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e3502e;
+  border-radius: 10px;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+}
+
+input[type="radio"]::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em #e3502e;
+  border-radius: 6px;
+}
+
+input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+.editButton {
+  border: none;
+  background-color: #898989;
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  height: 32px;
+  width: 32px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.submitButton {
+  border: none;
+  padding: 16px 32px;
+  background-color: #e3502e;
+  border-radius: 32px;
+  width: max-content;
+}
+.citySelect {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+.cityOptions {
+  width: 100%;
+  position: absolute;
+  top: calc(100% + 8px);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: large;
+  border-radius: 8px;
+  background-color: #fafafa;
+  color: #2b2b2b;
+  gap: 8px;
+  z-index: 5;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+}
+.cityOption {
+  cursor: pointer;
+}
+.toggleMoogle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}

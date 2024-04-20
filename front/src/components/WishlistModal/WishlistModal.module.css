@@ -1,0 +1,52 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
+  .modal {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: #ffffff;
+    padding: 32px 80px;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    width: 30%;
+  }
+  .select {
+        padding: 8px 32px;
+        width: 100%;
+        font-size: large;
+        border-radius: 8px;
+        background-color: #fafafa;
+        border: 1px solid #f2f2f2;
+        color: #2b2b2b;
+        padding-left: 8px;
+      }  
+  .buttons {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .okButton, .cancelButton {
+    border: none;
+    padding: 12px 24px;
+    font-weight: 600;
+    width: max-content;
+    border-radius: 32px;
+    cursor: pointer;
+  }
+  .okButton {
+    background-color: #e3502e;
+    color: #ffffff;
+  }

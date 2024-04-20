@@ -59,3 +59,16 @@
   height: 44px;
   width: 90%;
 }
+.buttons {
+  width: 100%;
+  display: flex;
+  align-items: center;
+justify-content: center;
+}
+
+.addToCartButton {
+  border: none;
+  padding: 8px 24px;
+  border-radius: 16px;
+  background-color: #e3502e;
+}

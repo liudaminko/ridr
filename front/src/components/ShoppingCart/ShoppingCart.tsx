@@ -1,74 +1,108 @@
+import React, { useEffect, useState } from "react";
 import styles from "./ShoppingCart.module.css";
 import { useModal } from "../../ModalContext";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+interface CartItem {
+  customerId: number;
+  bookId: number;
+  sequenceNumber: number;
+  quantity: number;
+  shortInfoBook: {
+    id: number;
+    title: string;
+    imageUrl: string;
+    authors: string;
+    price: number;
+    liked: boolean;
+  };
+}
 
 function ShoppingCart() {
   const { isCartOpen, toggleCart } = useModal();
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const navigate = useNavigate();
 
-  const [cart, setCart] = useState({
-    userId: 1,
-    cart: [
-      {
-        id: 1,
-        image: "/9780060935467.jpeg",
-        title: "1984",
-        authors: ["George Orwell"],
-        quantity: 1,
-        price: 12,
-        bookSequence: 1,
-      },
-      {
-        id: 2,
-        image: "/9780140434262.jpeg",
-        title: "To Kill a Mockingbird",
-        authors: ["Harper Lee", "lets imagine"],
-        quantity: 1,
-        price: 9,
-        bookSequence: 2,
-      },
-      {
-        id: 3,
-        image: "/9780060935467.jpeg",
-        title: "1984",
-        authors: ["George Orwell"],
-        quantity: 1,
-        price: 12,
-        bookSequence: 1,
-      },
-      {
-        id: 4,
-        image: "/9780140434262.jpeg",
-        title: "To Kill a Mockingbird",
-        authors: ["Harper Lee", "lets imagine"],
-        quantity: 1,
-        price: 9,
-        bookSequence: 2,
-      },
-    ],
-  });
-
-  const handleQuantityChange = (itemId: number, newQuantity: number) => {
-    const updatedCart = cart.cart.map((item) => {
-      if (item.id === itemId) {
-        return { ...item, quantity: newQuantity };
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+          throw new Error("User ID not found in localStorage");
+        }
+        const response = await fetch(
+          `http://localhost:8080/cart?userId=${userId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch cart data");
+        }
+        const data = await response.json();
+        setCart(data);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
       }
-      return item;
-    });
+    };
 
-    setCart({ ...cart, cart: updatedCart });
+    if (isCartOpen) {
+      fetchCart();
+    }
+  }, [isCartOpen]);
+
+  const handleQuantityChange = async (itemId: number, newQuantity: number) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = await fetch("http://localhost:8080/cart", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          bookId: itemId,
+          userId: parseInt(userId || "0"),
+          quantity: newQuantity,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update item quantity");
+      }
+      const updatedCart = cart.map((item) =>
+        item.bookId === itemId ? { ...item, quantity: newQuantity } : item
+      );
+      setCart(updatedCart);
+    } catch (error) {
+      console.error("Error updating item quantity:", error);
+    }
   };
 
-  const handleDeleteItem = (itemId: number) => {
-    const updatedCart = cart.cart.filter((item) => item.id !== itemId);
-
-    setCart({ ...cart, cart: updatedCart });
+  const handleDeleteItem = async (itemId: number) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = await fetch(
+        `http://localhost:8080/cart?bookId=${itemId}&userId=${userId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to delete item from cart");
+      }
+      const updatedCart = cart.filter((item) => item.bookId !== itemId);
+      setCart(updatedCart);
+    } catch (error) {
+      console.error("Error deleting item from cart:", error);
+    }
   };
 
   const calculateTotal = () => {
-    return cart.cart.reduce(
-      (total, item) => total + item.quantity * item.price,
+    return cart.reduce(
+      (total, item) => total + item.quantity * item.shortInfoBook.price,
       0
     );
+  };
+
+  const handleCreateOrder = () => {
+    toggleCart();
+    navigate("/order");
   };
 
   return isCartOpen ? (
@@ -79,27 +113,25 @@ function ShoppingCart() {
         </button>
         <h2>Shopping Cart</h2>
         <div className={styles.itemsContainer}>
-          {cart.cart.map((item) => (
-            <div key={item.id} className={styles.item}>
+          {cart.map((item) => (
+            <div key={item.bookId} className={styles.item}>
               <div className={styles.cover}>
                 <img
-                  src={item.image}
-                  alt={item.title}
+                  src={item.shortInfoBook.imageUrl}
+                  alt={item.shortInfoBook.title}
                   className={styles.itemImage}
                   style={{ height: "120px" }}
                 />
               </div>
               <div className={styles.infoContainer}>
-                <div className={styles.title}>{item.title}</div>
-                {item.authors.map((author, index) => (
-                  <div key={index} className={styles.author}>
-                    {author}
-                  </div>
-                ))}
+                <div className={styles.title}>{item.shortInfoBook.title}</div>
+                <div className={styles.author}>
+                  {item.shortInfoBook.authors}
+                </div>
                 <div className={styles.quantityContainer}>
                   <button
                     onClick={() =>
-                      handleQuantityChange(item.id, item.quantity - 1)
+                      handleQuantityChange(item.bookId, item.quantity - 1)
                     }
                     className={styles.decreaseQuantityButton}
                     disabled={item.quantity === 1}
@@ -109,16 +141,18 @@ function ShoppingCart() {
                   <div>{item.quantity}</div>
                   <button
                     onClick={() =>
-                      handleQuantityChange(item.id, item.quantity + 1)
+                      handleQuantityChange(item.bookId, item.quantity + 1)
                     }
                     className={styles.increaseQuantityButton}
                   >
                     +
                   </button>
                 </div>
-                <div className={styles.price}>Price: ${item.price}</div>
+                <div className={styles.price}>
+                  Price: ${item.shortInfoBook.price}
+                </div>
                 <button
-                  onClick={() => handleDeleteItem(item.id)}
+                  onClick={() => handleDeleteItem(item.bookId)}
                   className={styles.deleteItemButton}
                 >
                   Delete
@@ -130,7 +164,12 @@ function ShoppingCart() {
         <div className={styles.total}>
           <h3>Total: ${calculateTotal()}</h3>
         </div>
-        <button className={styles.createOrderButton}>Checkout</button>
+        <button
+          className={styles.createOrderButton}
+          onClick={handleCreateOrder}
+        >
+          Checkout
+        </button>
       </div>
     </div>
   ) : null;

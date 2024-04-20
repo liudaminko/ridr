@@ -1,12 +1,14 @@
 package com.ridr.back.controller;
 
 import com.ridr.back.model.FullInfoBook;
+import com.ridr.back.model.ShoppingCart;
 import com.ridr.back.model.ShortInfoBook;
 import com.ridr.back.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/catalog")
@@ -28,4 +30,13 @@ public class BookController {
     public FullInfoBook getFullInfoBook(@RequestParam int bookId) {
         return repository.getFullInfoBook(bookId);
     }
+
+//    @PostMapping("/like")
+//    public ShortInfoBook AddToWishlist(@RequestBody Map<String, Object> payload) {
+//        Integer wishlistId = (Integer) payload.get("wishlistId");
+//        Integer userId = (Integer) payload.get("userId");
+//        Integer bookId = (Integer) payload.get("bookId");
+//        return repository.addBookToWishlist(wishlistId, userId, bookId);
+//
+//    }
 }

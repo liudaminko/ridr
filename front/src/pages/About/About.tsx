@@ -23,7 +23,7 @@ function About() {
           </h2>
           <h3 style={{ textAlign: "left" }}>technologies used:</h3>
           <ul>
-            <li>• SQL for DB</li>
+            <li>• SQLServer for DB</li>
             <li>• Java</li>
             <li>• React</li>
           </ul>

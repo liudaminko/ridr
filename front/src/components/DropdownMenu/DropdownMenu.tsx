@@ -24,7 +24,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
             <img
               key={index}
               src={optionImages[index]}
-              style={{ height: "16px" }}
+              style={{ height: "24px" }}
               alt={`${option} Image`}
             />
           )}

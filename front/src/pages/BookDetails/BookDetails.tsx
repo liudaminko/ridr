@@ -91,7 +91,7 @@ function BookDetails() {
       <div className={styles.cover}>
         <div className={styles.tags}></div>
         <img
-          src="/9780060935467.jpeg"
+          src={bookDetails?.imageUrl}
           alt="cover"
           className={styles.coverImage}
         />

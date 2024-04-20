@@ -14,7 +14,7 @@ interface BookProps {
   title: string;
   authors: string;
   price: number;
-  image_url: string;
+  imageUrl: string;
   liked: boolean;
 }
 
@@ -34,6 +34,7 @@ function Wishlist() {
   const [wishlistBooks, setWishlistBooks] = useState<BookProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [newWishlistName, setNewWishlistName] = useState("");
 
   const [userId, setUserId] = useState<string | null>(
     localStorage.getItem("userId")
@@ -154,6 +155,42 @@ function Wishlist() {
     }
   };
 
+  const handleCreateNewWishlist = async () => {
+    if (!newWishlistName.trim()) {
+      setError("Wishlist name cannot be empty");
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:8080/wishlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: newWishlistName.trim(),
+          userId: parseInt(userId || "0"),
+        }),
+      });
+      if (response.ok) {
+        toggleCreateListModalVisibility();
+        setNewWishlistName("");
+        const updatedResponse = await fetch(
+          `http://localhost:8080/wishlist/all?userId=${userId}`
+        );
+        if (updatedResponse.ok) {
+          const data = await updatedResponse.json();
+          setWishlists(data);
+        } else {
+          setError("Failed to fetch updated wishlists");
+        }
+      } else {
+        setError("Failed to create new wishlist");
+      }
+    } catch (error) {
+      setError("Error creating new wishlist");
+    }
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.pageTitle}>Wishlists</h1>
@@ -214,14 +251,14 @@ function Wishlist() {
             {selectedWishlist ? selectedWishlist.name : "     "}
           </h2>
           <div className={styles.wishlistBooks}>
-            {wishlistBooks.map((book) => (
+            {wishlistBooks.map((book, index) => (
               <Book
-                key={book.book_id}
+                key={index}
                 id={book.book_id}
                 title={book.title}
                 price={book.price}
                 authors={book.authors}
-                imageUrl={book.image_url}
+                imageUrl={book.imageUrl}
                 liked={book.liked}
                 width="18%"
               />
@@ -242,11 +279,13 @@ function Wishlist() {
                 type="text"
                 placeholder="wishlist name"
                 className={styles.inputBox}
+                value={newWishlistName}
+                onChange={(e) => setNewWishlistName(e.target.value)}
               />
               <div className={styles.buttons}>
                 <button
                   className={styles.saveButton}
-                  onClick={() => toggleCreateListModalVisibility()}
+                  onClick={handleCreateNewWishlist}
                 >
                   save
                 </button>

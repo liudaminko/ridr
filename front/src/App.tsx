@@ -15,6 +15,9 @@ import LogInPopup from "./components/LogInPopup/LogInPopup";
 import SignUpPopup from "./components/SignUpPopup/SignUpPopup";
 import { ModalProvider } from "./ModalContext";
 import ScrollToTop from "./ScrollToTop";
+import Delivery from "./pages/Delivery/Delivery";
+import Order from "./pages/Order/Order";
+import Admin from "./pages/Admin/Admin";
 
 function App() {
   return (
@@ -32,6 +35,9 @@ function App() {
               <Route path="/book/:id" element={<BookDetails />} />
               <Route path="/search/:q" element={<SearchResults />} />
               <Route path="/about" element={<About />} />
+              <Route path="/delivery" element={<Delivery />} />
+              <Route path="/order" element={<Order />} />
+              <Route path="/admin" element={<Admin />} />
             </Routes>
           </div>
           <Footer />

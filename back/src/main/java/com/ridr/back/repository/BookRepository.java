@@ -62,7 +62,13 @@ public class BookRepository {
         return jdbcTemplate.queryForObject(query, new Object[]{bookId}, new BeanPropertyRowMapper<>(FullInfoBook.class));
     }
 
-
+//    public ShortInfoBook addBookToWishlist(Integer wishlistId, Integer userId, Integer bookId) {
+//        //insert into book_wishlist
+//        String query = "INSERT INTO Book_Wishlist ";
+//        //update wishlist last_modified_at
+//        return jdbcTemplate.queryForObject(query, new Object[]{wishlistId, userId, bookId}, new BeanPropertyRowMapper<>(ShorInfoBook.class));
+//
+//    }
 
 
 //    public List<ShortInfoBook> getSortedBooks(String param, String order) {

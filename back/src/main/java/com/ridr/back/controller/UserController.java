@@ -51,4 +51,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+    @GetMapping("/info")
+    public User getUserInfo(@RequestParam int userId) {
+        return repository.getUserById(userId);
+    }
 }

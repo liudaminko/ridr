@@ -17,7 +17,7 @@ interface Book {
   title: string;
   price: number;
   authors: string;
-  image_url: string;
+  imageUrl: string;
   liked: boolean;
 }
 
@@ -135,7 +135,7 @@ function Catalog() {
               title={book.title}
               price={book.price}
               authors={book.authors}
-              imageUrl={book.image_url}
+              imageUrl={book.imageUrl}
               liked={book.liked}
               width="22%"
             />

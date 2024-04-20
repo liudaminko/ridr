@@ -8,6 +8,6 @@ import java.time.LocalDateTime;
 public class Wishlist {
     private int id;
     private String name;
-    private int userId;
+    private int customerId;
     private LocalDateTime lastModifiedAt;
 }

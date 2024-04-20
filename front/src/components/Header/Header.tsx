@@ -14,7 +14,7 @@ function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const options = ["Settings", "Wishlists", "Orders", "Log Out"];
-  const optionsUrls = ["", "", "", "/exit.png"];
+  const optionsUrls = ["/settings.png", "/heart.png", "/order.png", ""];
 
   const navigation = useNavigate();
 

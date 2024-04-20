@@ -3,7 +3,6 @@ import { useModal } from "../../ModalContext";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import axios from "axios";
 
 function SignUpPopup() {
   const { isSignUpOpen, toggleSignUpPopup, toggleLogInPopup } = useModal();
