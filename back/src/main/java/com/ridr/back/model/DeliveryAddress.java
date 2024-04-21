@@ -10,5 +10,12 @@ public class DeliveryAddress {
     private String city;
     private String region;
     private String address;
-    private LocalDateTime last_edited_at;
+    private LocalDateTime lastEditedAt;
+
+    public DeliveryAddress(String city, String region, String address) {
+        this.city = city;
+        this.region = region;
+        this.address = address;
+        this.lastEditedAt = LocalDateTime.now();
+    }
 }

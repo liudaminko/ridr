@@ -59,3 +59,19 @@ a {
 .schedule {
   font-size: 12px;
 }
+.cartContainer {
+  position: relative;
+}
+.cartCount {
+  position: absolute;
+  z-index: 2;
+  top: -4px;
+  right: -8px;
+  background-color: #e3502e;
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}

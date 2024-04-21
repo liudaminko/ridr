@@ -11,9 +11,9 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class GenreRepository {
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate1;
     public List<Genre> getAll() {
         String query = "SELECT * FROM Genre";
-        return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Genre.class));
+        return jdbcTemplate1.query(query, BeanPropertyRowMapper.newInstance(Genre.class));
     }
 }

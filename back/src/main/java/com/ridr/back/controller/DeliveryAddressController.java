@@ -15,7 +15,7 @@ public class DeliveryAddressController {
     private final DeliveryAddressRepository repository;
 
     @PostMapping
-    public ResponseEntity<Integer> createDeliveryAddress(@RequestBody DeliveryAddress request) {
+    public Integer createDeliveryAddress(@RequestBody DeliveryAddress request) {
         return repository.create(request);
     }
 }

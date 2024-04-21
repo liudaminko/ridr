@@ -1,13 +1,10 @@
 package com.ridr.back.controller;
 
-import com.ridr.back.model.ShortInfoBook;
-import com.ridr.back.model.User;
+
 import com.ridr.back.model.Wishlist;
 import com.ridr.back.model.WishlistBooks;
-import com.ridr.back.repository.BookRepository;
 import com.ridr.back.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/wishlist")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://ridr.s3-website.eu-north-1.amazonaws.com/"})
 public class WishlistController {
     private final WishlistRepository repository;
 

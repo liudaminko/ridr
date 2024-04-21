@@ -14,7 +14,7 @@ public class DeliveryController {
     private final DeliveryRepository repository;
 
     @PostMapping
-    public ResponseEntity<Integer> createDelivery(@RequestBody Delivery request) {
+    public Integer createDelivery(@RequestBody Delivery request) {
         return repository.createDelivery(request);
     }
 }

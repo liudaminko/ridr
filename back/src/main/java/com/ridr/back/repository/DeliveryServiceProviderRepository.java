@@ -11,10 +11,10 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class DeliveryServiceProviderRepository {
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate1;
 
     public List<DeliveryServiceProvider> getAll() {
         String query = "SELECT * FROM Delivery_Service_Provider";
-        return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(DeliveryServiceProvider.class));
+        return jdbcTemplate1.query(query, BeanPropertyRowMapper.newInstance(DeliveryServiceProvider.class));
     }
 }

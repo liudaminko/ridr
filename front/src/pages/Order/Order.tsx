@@ -140,12 +140,26 @@ function Order() {
         }
         const data = await response.json();
         setCustomer(data);
+        setFirstName(data.firstName);
+        setLastName(data.lastName);
+        setPhone(data.phoneNumber);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
     fetchUserInfo();
   }, [userId]);
+
+  useEffect(() => {
+    const updateRecipientInfo = () => {
+      if (!isRecipientOtherPerson) {
+        setFirstName(customer?.firstName || "");
+        setLastName(customer?.lastName || "");
+        setPhone(customer?.phoneNumber || "");
+      }
+    };
+    updateRecipientInfo();
+  }, [isRecipientOtherPerson]);
 
   const handleQuantityChange = async (itemId: number, newQuantity: number) => {
     try {
@@ -205,70 +219,7 @@ function Order() {
     setIsRecipientOtherPerson(event.target.checked);
   };
 
-  const createDeliveryAddress = async () => {
-    try {
-      const [city, region] = selectedCityRegion.split(",");
-      const response = await fetch("http://localhost:8080/deliveryaddress", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          region: region.trim(),
-          city: city.trim(),
-          address: selectedAddress.trim(),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create delivery address");
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error creating delivery address:", error);
-      throw error;
-    }
-  };
-
-  const createDelivery = async (deliveryAddressId: string) => {
-    try {
-      const finalRecipientName = isRecipientOtherPerson
-        ? firstName + " " + lastName
-        : customer?.firstName + " " + customer?.lastName;
-      const finalRecipientPhone = isRecipientOtherPerson
-        ? phone
-        : customer?.phoneNumber;
-
-      console.log(selectedDeliveryType);
-      const response = await fetch("http://localhost:8080/delivery", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          deliveryAddressId: parseInt(deliveryAddressId || "0"),
-          deliveryTypeId: selectedDeliveryType,
-          deliveryServiceProviderId: selectedServiceProvider,
-          recipientName: finalRecipientName,
-          recipientPhone: finalRecipientPhone,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create delivery");
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error creating delivery:", error);
-      throw error;
-    }
-  };
-
-  const createOrder = async (deliveryId: string) => {
+  const handleSubmitOrderClick = async () => {
     try {
       const response = await fetch("http://localhost:8080/order", {
         method: "POST",
@@ -276,8 +227,25 @@ function Order() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          customerId: parseInt(userId || "0"),
-          deliveryId: parseInt(deliveryId || "0"),
+          order: {
+            customerId: parseInt(userId || "0"),
+          },
+          delivery: {
+            recipientName: `${firstName} ${lastName}`,
+            recipientPhone: phone,
+            deliveryTypeId: selectedDeliveryType,
+            deliveryServiceProviderId: selectedServiceProvider,
+          },
+          deliveryAddress: {
+            city: selectedCityRegion.split(",")[0].trim(),
+            region: selectedCityRegion.split(",")[1].trim(),
+            address: addressInputValue.trim(),
+          },
+          cartItems: cart.map((item) => ({
+            bookId: item.shortInfoBook.id,
+            quantity: item.quantity,
+            sequenceNumber: item.sequenceNumber,
+          })),
         }),
       });
 
@@ -286,39 +254,7 @@ function Order() {
       }
 
       const data = await response.json();
-      console.log("order created successfully");
-      return data;
-    } catch (error) {
-      console.error("Error creating order:", error);
-      throw error;
-    }
-  };
-
-  const clearCart = async () => {
-    try {
-      const userId = localStorage.getItem("userId");
-      const response = await fetch(
-        `http://localhost:8080/cart/all?userId=${userId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to delete items from cart");
-      }
-    } catch (error) {
-      console.error("Error deleting items from cart:", error);
-    }
-  };
-
-  const handleSubmitOrderClick = async () => {
-    try {
-      const deliveryAddressId = await createDeliveryAddress();
-      const deliveryId = await createDelivery(deliveryAddressId);
-      const orderId = await createOrder(deliveryId);
-      const clearCartStatus = await clearCart();
-
-      console.log("Order created successfully with ID:", orderId);
+      console.log("Order created successfully with ID:", data.id);
       console.log("cleared shopping cart");
     } catch (error) {
       console.error("Error creating order:", error);

@@ -1,7 +1,6 @@
 package com.ridr.back.controller;
 
 import com.ridr.back.model.FullInfoBook;
-import com.ridr.back.model.ShoppingCart;
 import com.ridr.back.model.ShortInfoBook;
 import com.ridr.back.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/catalog")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://ridr.s3-website.eu-north-1.amazonaws.com/"})
 public class BookController {
     private final BookRepository repository;
 
@@ -35,6 +34,16 @@ public class BookController {
     public List<ShortInfoBook> findAnyBooks(@RequestParam String keywords) {
         return repository.findAnyBooksFilter(keywords);
     }
+
+    @GetMapping("/short")
+    public ShortInfoBook getShortInfoBookAuthorized(@RequestParam int userId, int bookId) {
+        return repository.getShortInfoBookAuthorized(userId, bookId);
+    }
+    @GetMapping("/popularmonth")
+    public List<ShortInfoBook> getPopularBooksDuringLastMonth(@RequestParam int userId) {
+        return repository.getMostPopularBooksInLastMonth(userId);
+    }
+
 
 //    @PostMapping("/like")
 //    public ShortInfoBook AddToWishlist(@RequestBody Map<String, Object> payload) {

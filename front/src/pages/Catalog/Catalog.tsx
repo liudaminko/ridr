@@ -12,7 +12,7 @@ interface Filters {
   genre: FilterItem[];
 }
 
-interface Book {
+export interface Book {
   id: number;
   title: string;
   price: number;

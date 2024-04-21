@@ -1,0 +1,116 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.entityControls {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f2f2f2;
+    padding: 16px 32px;
+    border-radius: 16px;
+    align-items: center;
+}
+.toggles {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    justify-content: center;
+}
+.actionFields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: #fbfbfb;
+    border-radius: 16px;
+    padding: 16px 32px;
+}
+.fetchingHeader {
+    display: flex;
+    justify-content: space-between;
+}
+.fetching {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+}
+.fetchingFilters {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+}
+.filterProps {
+    display: flex;
+    gap: 16px;
+    width: max-content;
+    align-items: center;
+}
+.fetchingRowsProps {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.selector {
+    padding: 8px 16px;
+    background-color: #fafafa;
+    border: 2px solid #f2f2f2;
+    color: #2b2b2b;
+    font-size: large;
+    border-radius: 8px;
+}
+
+.inputBox {
+    padding: 8px 32px;
+    width: 50%;
+    font-size: large;
+    border-radius: 8px;
+    background-color: #fafafa;
+    border: 1px solid #f2f2f2;
+    color: #2b2b2b;
+    padding-left: 8px;
+    outline: 2px solid #f2f2f2;
+
+  }
+  .inputBox:focus-visible {
+    border: 1px solid #a4ae9d;
+    outline: 2px solid #a4ae9d;
+  }
+.formControl {
+    font-family: system-ui, sans-serif;
+    line-height: 1.1;
+    display: grid;
+    grid-template-columns: 1em auto;
+    gap: 0.5em;
+    display: flex;
+    align-items: center;
+  }
+ 
+  .formControl + .formControl {
+    margin-top: 1em;
+  }
+.requestButton {
+    border: none;
+    padding: 8px 16px;
+    background-color: #a4ae9d;
+    border-radius: 20px;
+    height: min-content;
+}
+.filters {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+}
+.filterLabel {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: #f2f2f2;
+    cursor: pointer;
+    width: max-content;
+}
+.selected {
+    background-color: #a4ae9d;
+}
+.filterItem {
+    display: flex;
+    gap: 8px;
+}

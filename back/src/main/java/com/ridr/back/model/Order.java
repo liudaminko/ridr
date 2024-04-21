@@ -13,4 +13,6 @@ public class Order {
     private LocalDate date;
     private LocalTime time;
     private int deliveryId;
+    private Delivery delivery;
+    private DeliveryAddress deliveryAddress;
 }

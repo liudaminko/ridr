@@ -11,10 +11,10 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class LanguageRepository {
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate1;
 
     public List<Language> getAll() {
         String query = "SELECT DISTINCT language as name FROM Book";
-        return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Language.class));
+        return jdbcTemplate1.query(query, BeanPropertyRowMapper.newInstance(Language.class));
     }
 }

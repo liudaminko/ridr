@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class BookRepository {
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate1;
 
     public List<ShortInfoBook> getBooks(int limit, int offset) {
         String query = "SELECT DISTINCT b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price " +
@@ -24,7 +24,7 @@ public class BookRepository {
                 "OFFSET " + offset + " ROWS " +
                 "FETCH NEXT " + limit + " ROWS ONLY";
 
-        return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(ShortInfoBook.class));
+        return jdbcTemplate1.query(query, BeanPropertyRowMapper.newInstance(ShortInfoBook.class));
     }
     public List<ShortInfoBook> getBooksAuthorized(int limit, int offset, int userId) {
         String query = "SELECT DISTINCT b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price, " +
@@ -38,8 +38,22 @@ public class BookRepository {
                 "OFFSET " + offset + " ROWS " +
                 "FETCH NEXT " + limit + " ROWS ONLY";
 
-        return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(ShortInfoBook.class));
+        return jdbcTemplate1.query(query, BeanPropertyRowMapper.newInstance(ShortInfoBook.class));
     }
+
+    public ShortInfoBook getShortInfoBookAuthorized(int userId, int bookId) {
+        String query = "SELECT DISTINCT b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price, " +
+                "MAX(CASE WHEN w.id IS NOT NULL THEN 1 ELSE 0 END) OVER (PARTITION BY b.id) AS liked " +
+                "FROM Book b " +
+                "JOIN Book_Authors ba ON ba.book_id = b.id " +
+                "JOIN Author a ON a.id = ba.author_id " +
+                "LEFT JOIN Book_Wishlist bw ON b.id = bw.book_id " +
+                "LEFT JOIN Wishlist w ON w.id = bw.wishlist_id AND w.customer_id = ? " +
+                "WHERE b.id = ?";
+
+        return jdbcTemplate1.queryForObject(query, new Object[]{userId, bookId}, new BeanPropertyRowMapper<>(ShortInfoBook.class));
+    }
+
 
     public FullInfoBook getFullInfoBook(int bookId) {
         String query = "SELECT " +
@@ -59,7 +73,7 @@ public class BookRepository {
                 "FROM Book b " +
                 "WHERE b.id = ?";
 
-        return jdbcTemplate.queryForObject(query, new Object[]{bookId}, new BeanPropertyRowMapper<>(FullInfoBook.class));
+        return jdbcTemplate1.queryForObject(query, new Object[]{bookId}, new BeanPropertyRowMapper<>(FullInfoBook.class));
     }
 
     public List<ShortInfoBook> findAnyBooksFilter(String keywords) {
@@ -70,17 +84,28 @@ public class BookRepository {
                 "WHERE b.title LIKE ? OR CONCAT(a.first_name, ' ', a.last_name) LIKE ? OR b.isbn LIKE ? " +
                 "ORDER BY b.id";
 
-        return jdbcTemplate.query(query, new Object[]{"%" + keywords + "%", "%" + keywords + "%", "%" + keywords + "%"}, new BeanPropertyRowMapper<>(ShortInfoBook.class));
+        return jdbcTemplate1.query(query, new Object[]{"%" + keywords + "%", "%" + keywords + "%", "%" + keywords + "%"}, new BeanPropertyRowMapper<>(ShortInfoBook.class));
     }
 
-
-//    public ShortInfoBook addBookToWishlist(Integer wishlistId, Integer userId, Integer bookId) {
-//        //insert into book_wishlist
-//        String query = "INSERT INTO Book_Wishlist ";
-//        //update wishlist last_modified_at
-//        return jdbcTemplate.queryForObject(query, new Object[]{wishlistId, userId, bookId}, new BeanPropertyRowMapper<>(ShorInfoBook.class));
-//
-//    }
+    public List<ShortInfoBook> getMostPopularBooksInLastMonth(int userId) {
+        String query = "SELECT TOP 10 bs.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price, COALESCE(bs.total_sold, 0) AS sold, COALESCE(w.liked, 0) AS liked " +
+                "FROM ( " +
+                "SELECT bo.book_id AS id, SUM(bo.quantity) AS total_sold FROM Book_Order bo " +
+                "JOIN Order_ o ON bo.order_id = o.id " +
+                "WHERE o.date >= DATEADD(MONTH, -1, GETDATE()) " +
+                "GROUP BY bo.book_id " +
+                ") bs " +
+                "JOIN Book b ON bs.id = b.id " +
+                "JOIN Book_Authors ba ON b.id = ba.book_id " +
+                "JOIN Author a ON ba.author_id = a.id " +
+                "LEFT JOIN (" +
+                "SELECT bw.book_id, 1 AS liked FROM Book_Wishlist bw " +
+                "JOIN Wishlist w ON bw.wishlist_id = w.id " +
+                "WHERE w.customer_id = ? " +
+                ") w ON b.id = w.book_id " +
+                "ORDER BY sold DESC";
+        return jdbcTemplate1.query(query, new Object[]{userId}, new BeanPropertyRowMapper<>(ShortInfoBook.class));
+    }
 
 
 //    public List<ShortInfoBook> getSortedBooks(String param, String order) {

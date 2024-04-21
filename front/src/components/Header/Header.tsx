@@ -13,8 +13,8 @@ function Header() {
   );
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const options = ["Settings", "Wishlists", "Orders", "Log Out"];
-  const optionsUrls = ["/settings.png", "/heart.png", "/order.png", ""];
+  const options = ["Settings", "Orders", "Log Out"];
+  const optionsUrls = ["/settings.png", "/order.png", ""];
 
   const navigation = useNavigate();
 
@@ -24,13 +24,34 @@ function Header() {
       setUserId(storedUserId);
     }
   }, [userId, localStorage]);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (userId) {
+        try {
+          const response = await fetch(
+            `http://localhost:8080/cart?userId=${userId}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setCartItemsCount(data.length);
+          } else {
+            throw new Error("Failed to fetch cart items");
+          }
+        } catch (error) {
+          console.error("Error fetching cart items:", error);
+        }
+      }
+    };
+
+    fetchCartItems();
+  }, [userId]);
 
   const handleOptionClick = (option: string) => {
     console.log("Clicked:", option);
     if (option === "Settings") {
       navigation("/cabinet");
-    } else if (option === "Wishlists") {
-      navigation("/wishlist");
     } else if (option === "Orders") {
       navigation("/order");
     } else {
@@ -57,12 +78,16 @@ function Header() {
           <Link to="/wishlist">
             <img src="/like.png" style={{ height: "24px" }} alt="wishlist" />
           </Link>
-          <img
-            src="/shopping-cart.png"
-            style={{ height: "24px", cursor: "pointer" }}
-            onClick={toggleCart}
-            alt="cart"
-          />
+          <div className={styles.cartContainer} onClick={toggleCart}>
+            <img
+              src="/shopping-cart.png"
+              style={{ height: "24px", cursor: "pointer" }}
+              alt="cart"
+            />
+            {cartItemsCount > 0 && (
+              <div className={styles.cartCount}>{cartItemsCount}</div>
+            )}
+          </div>
         </div>
         {userId ? (
           <img

@@ -1,107 +1,163 @@
 import styles from "./Admin.module.css";
-import { useEffect, useState } from "react";
+import EntityEditor from "../../components/EntityEditor/EntityEditor";
 
-const Admin = () => {
-  const [publishers, setPublishers] = useState([]);
-  const [genres, setGenres] = useState([]);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [selectedAction, setSelectedAction] = useState<string | null>(null);
+function Admin() {
+  const publisherFields = [
+    {
+      name: "name",
+      label: "Name",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "address",
+      label: "Address",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+  ];
 
-  const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({
-    Publisher: false,
-    Genre: false,
-  });
+  const genreFields = [
+    {
+      name: "name",
+      label: "Name",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+  ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const headers = { Authorization: `Bearer ${token}` };
+  const authorFields = [
+    {
+      name: "firstName",
+      label: "First name",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "lastName",
+      label: "Last name",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "biography",
+      label: "Biography",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+  ];
 
-        const publishersResponse = await fetch("/api/publishers", { headers });
-        const publishersData = await publishersResponse.json();
-        setPublishers(publishersData);
+  const bookFields = [
+    {
+      name: "title",
+      label: "Title",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "description",
+      label: "Description",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "genre",
+      label: "Genre",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "publisher",
+      label: "Publisher",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "publishingYear",
+      label: "Publishing year",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "pages",
+      label: "Pages",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "isbn",
+      label: "ISBN",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "language",
+      label: "Language (3 letters)",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "imageUrl",
+      label: "Image URL",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "price",
+      label: "Price",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+  ];
 
-        const genresResponse = await fetch("/api/genres", { headers });
-        const genresData = await genresResponse.json();
-        setGenres(genresData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleOptionSelect = (option: string) => {
-    setSelectedOption(option);
-    setSelectedAction(null);
-    setIsOpen((prevState) => ({
-      ...prevState,
-      [option]: !prevState[option],
-    }));
-  };
-
-  const handleActionSelect = (action: string) => {
-    setSelectedAction(action);
-  };
+  const bookAuthorsFields = [
+    {
+      name: "author",
+      label: "Author's full name",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+    {
+      name: "book",
+      label: "Book's title",
+      type: "text",
+      value: "",
+      onChange: () => {},
+    },
+  ];
 
   return (
     <div className={styles.container}>
-      <h2>Admin Dashboard</h2>
-      <div
-        className={styles.tableContainer}
-        onClick={() => handleOptionSelect("Publisher")}
-      >
-        <h3>Publishers</h3>
-        <img
-          src={isOpen.Publisher ? "/opened.png" : "/closed.png"}
-          alt={isOpen.Publisher ? "open" : "closed"}
-          style={{ height: "24px" }}
-        />
-        {isOpen.Publisher && (
-          <div>
-            <div>
-              <button onClick={() => handleActionSelect("add")}>Add</button>
-              <button onClick={() => handleActionSelect("change")}>
-                Change
-              </button>
-              <button onClick={() => handleActionSelect("delete")}>
-                Delete
-              </button>
-            </div>
-            {selectedAction === "add" && (
-              <div>
-                <label>
-                  <input type="text" />
-                  title
-                </label>
-              </div>
-            )}
-            {selectedAction === "delete" && (
-              <div>
-                <label>
-                  <input type="text" />
-                  isbn
-                </label>
-              </div>
-            )}
-          </div>
-        )}
+      <div className={styles.header}>
+        <h1 className={styles.title}>Admin Dashboard</h1>
+        <img src="/admin.png" style={{ height: "40px" }} alt="Admin" />
       </div>
-      <div
-        className={styles.tableContainer}
-        onClick={() => handleOptionSelect("Genre")}
-      >
-        <h3>Genres</h3>
-        <img
-          src={isOpen.Genre ? "/opened.png" : "/closed.png"}
-          alt={isOpen.Genre ? "open" : "closed"}
-          style={{ height: "24px" }}
-        />
+      <div className={styles.entitiesContainer}>
+        <EntityEditor title="Publisher" fields={publisherFields} />
+        <EntityEditor title="Genre" fields={genreFields} />
+        <EntityEditor title="Author" fields={authorFields} />
+        <EntityEditor title="Book" fields={bookFields} />
+        <EntityEditor title="Book's Authors" fields={bookAuthorsFields} />
       </div>
     </div>
   );
-};
+}
 
 export default Admin;

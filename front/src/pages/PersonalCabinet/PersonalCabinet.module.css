@@ -1,4 +1,79 @@
 .container {
     height: calc(100vh - 102px);
-    padding: 32px 120px;
+    padding: 32px 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    height: 100%;
 }
+.pageTitle {
+    text-align: left;
+}
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+  .inputName {
+    font-weight: 600;
+  }
+  .inputContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    flex: 1;
+  
+  }
+  .inputContainer > .errorLabel {
+    color: red;
+    font-size: 12px;
+  }
+  
+  .inputBox {
+    padding: 8px 32px;
+    width: 100%;
+    font-size: large;
+    border-radius: 8px;
+    background-color: #fafafa;
+    border: 1px solid #f2f2f2;
+    color: #2b2b2b;
+    padding-left: 8px;
+  }
+  .inputBox:focus-visible {
+    border: 1px solid #a4ae9d;
+    outline: 2px solid #a4ae9d;
+  }
+  .submitButton {
+    border: none;
+    padding: 16px 48px;
+    font-weight: 600;
+    background-color: #e3502e;
+    color: #ffffff;
+    width: max-content;
+    border-radius: 32px;
+    cursor: pointer;
+  }
+  .passwordContainer {
+    position: relative;
+    display: flex;
+    width: 100%;
+  }
+  .showPassword {
+    position: absolute;
+    top: 22%;
+    right: 2%;
+    height: 24px;
+    width: 24px;
+  }
+  .fullName {
+    display: flex;
+    gap: 16px;
+  }
+  .disabled {
+    background-color: #e5c7c0;
+  }
+
+  
