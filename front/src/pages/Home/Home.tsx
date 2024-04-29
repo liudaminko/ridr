@@ -41,8 +41,10 @@ function Home() {
         let url;
         if (userId) {
           url = `http://localhost:8080/book/new?userId=${userId}`;
+          console.log("AAAAAAAAAAAAAAAAAAAAAAAAAaa");
         } else {
           url = `http://localhost:8080/book/new/nonauthorized`;
+          console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
         }
 
         const response = await fetch(url);

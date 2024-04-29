@@ -94,22 +94,24 @@ function Book({
   };
 
   useEffect(() => {
-    const fetchWishlists = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8080/wishlist/all?userId=${userId}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setWishlists(data);
-        } else {
-          console.log("Failed to fetch wishlists");
+    if (userId) {
+      const fetchWishlists = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:8080/wishlist/all?userId=${userId}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setWishlists(data);
+          } else {
+            console.log("Failed to fetch wishlists");
+          }
+        } catch (error) {
+          console.log("Error fetching wishlists");
         }
-      } catch (error) {
-        console.log("Error fetching wishlists");
-      }
-    };
-    fetchWishlists();
+      };
+      fetchWishlists();
+    }
   }, [userId]);
 
   const handleAddToWishlist = async (wishlistId: number) => {

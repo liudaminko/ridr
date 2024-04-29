@@ -30,6 +30,10 @@ public class BookRepository {
 
         return jdbcTemplate1.query(query, BeanPropertyRowMapper.newInstance(ShortInfoBook.class));
     }
+    public int getBooksCount() {
+        String query = "SELECT COUNT(*) FROM Book WHERE is_active = 1";
+        return jdbcTemplate1.queryForObject(query, Integer.class);
+    }
     public List<ShortInfoBook> getBooksAuthorized(int limit, int offset, int userId, int genre, int publisher, int author, String language) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT DISTINCT b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price, ");
@@ -144,8 +148,9 @@ public class BookRepository {
                 "LEFT JOIN (" +
                 "SELECT bw.book_id, 1 AS liked FROM Book_Wishlist bw " +
                 "JOIN Wishlist w ON bw.wishlist_id = w.id " +
-                "WHERE w.customer_id = ? AND b.is_active = 1" +
+                "WHERE w.customer_id = ?" +
                 ") w ON b.id = w.book_id " +
+                "WHERE b.is_active = 1 " +
                 "ORDER BY sold DESC";
         return jdbcTemplate1.query(query, new Object[]{userId}, new BeanPropertyRowMapper<>(ShortInfoBook.class));
     }
@@ -218,6 +223,79 @@ public class BookRepository {
                 "ORDER BY b.id";
 
         return jdbcTemplate1.query(query, new BeanPropertyRowMapper<>(ShortInfoBook.class));
+    }
+
+    public List<ShortInfoBook> getAllBooks() {
+        String query = "SELECT DISTINCT b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price " +
+                "FROM Book b " +
+                "JOIN Book_Authors ba ON ba.book_id = b.id " +
+                "JOIN Author a ON a.id = ba.author_id " +
+                "JOIN Genre g ON g.id = b.genre_id " +
+                "WHERE b.is_active = 1" +
+                "ORDER BY b.id";
+
+        return jdbcTemplate1.query(query, new BeanPropertyRowMapper<>(ShortInfoBook.class));
+    }
+
+    public List<ShortInfoBook> findAllBooksByFilters(List<Long> genres, List<String> languages, List<Long> publishers, List<Long> authors) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT DISTINCT b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price ")
+                .append("FROM Book b ")
+                .append("JOIN Book_Authors ba ON ba.book_id = b.id ")
+                .append("JOIN Author a ON a.id = ba.author_id ")
+                .append("JOIN Genre g ON g.id = b.genre_id ")
+                .append("WHERE b.is_active = 1");
+
+        if (!genres.isEmpty()) {
+            queryBuilder.append(" AND g.id IN (");
+            for (int i = 0; i < genres.size(); i++) {
+                queryBuilder.append(genres.get(i));
+                if (i < genres.size() - 1) {
+                    queryBuilder.append(", ");
+                }
+            }
+            queryBuilder.append(")");
+        }
+
+        if (!publishers.isEmpty()) {
+            queryBuilder.append(" AND b.publisher_id IN (");
+            for (int i = 0; i < publishers.size(); i++) {
+                queryBuilder.append(publishers.get(i));
+                if (i < publishers.size() - 1) {
+                    queryBuilder.append(", ");
+                }
+            }
+            queryBuilder.append(")");
+        }
+
+        if (!authors.isEmpty()) {
+            queryBuilder.append(" AND a.id IN (");
+            for (int i = 0; i < authors.size(); i++) {
+                queryBuilder.append(authors.get(i));
+                if (i < authors.size() - 1) {
+                    queryBuilder.append(", ");
+                }
+            }
+            queryBuilder.append(")");
+        }
+
+        if (!languages.isEmpty()) {
+            queryBuilder.append(" AND b.language IN (");
+            for (int i = 0; i < languages.size(); i++) {
+                queryBuilder.append(languages.get(i));
+                if (i < languages.size() - 1) {
+                    queryBuilder.append(", ");
+                }
+            }
+            queryBuilder.append(")");
+        }
+
+        // Append ORDER BY clause
+        queryBuilder.append(" ORDER BY b.id");
+
+        String query = queryBuilder.toString();
+        return jdbcTemplate1.query(query, new BeanPropertyRowMapper<>(ShortInfoBook.class));
+        // Execute the query and return the result
     }
 
 

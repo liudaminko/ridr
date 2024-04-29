@@ -7,6 +7,7 @@ import com.ridr.back.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,10 @@ public class BookController {
     @GetMapping
     public List<ShortInfoBook> getBooks(@RequestParam(defaultValue = "20") int limit, @RequestParam(defaultValue = "0") int offset) {
         return repository.getBooks(limit, offset);
+    }
+    @GetMapping("/count")
+    public int getBooksCount() {
+        return repository.getBooksCount();
     }
     @GetMapping("/authorized")
     public List<ShortInfoBook> getBooksAuthorized(@RequestParam(defaultValue = "20") int limit, @RequestParam(defaultValue = "0") int offset, int userId, @RequestParam(defaultValue = "-1") int genre,  @RequestParam(defaultValue = "-1") int publisher,  @RequestParam(defaultValue = "-1") int author,  @RequestParam(defaultValue = "-1") String language) {
@@ -63,6 +68,35 @@ public class BookController {
     @GetMapping("/kids")
     public List<ShortInfoBook> getKidsBooks() {
         return repository.getBooksForKids();
+    }
+    @GetMapping("/authorized/filters")
+    public List<ShortInfoBook> getBooks(
+            @RequestParam(required = false, name = "genre") List<Long> genres,
+            @RequestParam(required = false, name = "language") List<String> languages,
+            @RequestParam(required = false, name = "publisher") List<Long> publishers,
+            @RequestParam(required = false, name = "author") List<Long> authors
+    ) {
+
+        if (genres == null) {
+            genres = new ArrayList<>();
+        }
+
+        // Check if languages is null, if so, initialize it as an empty list
+        if (languages == null) {
+            languages = new ArrayList<>();
+        }
+
+        // Check if publishers is null, if so, initialize it as an empty list
+        if (publishers == null) {
+            publishers = new ArrayList<>();
+        }
+
+        // Check if authors is null, if so, initialize it as an empty list
+        if (authors == null) {
+            authors = new ArrayList<>();
+        }
+
+        return repository.findAllBooksByFilters(genres, languages, publishers, authors);
     }
 
     @PostMapping

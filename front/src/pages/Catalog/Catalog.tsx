@@ -31,8 +31,11 @@ function Catalog() {
   const languageParam = queryParams.get("language");
 
   const [books, setBooks] = useState<Book[]>([]);
+  const [booksTotal, setBooksTotal] = useState(0);
+
   const [booksToShow, setBooksToShow] = useState<number>(20);
-  const [offset, setOffset] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1); // Current page number
+  const [totalPages, setTotalPages] = useState<number>(1);
 
   const navigate = useNavigate();
 
@@ -44,42 +47,68 @@ function Catalog() {
   );
 
   useEffect(() => {
+    setTotalPages(Math.ceil(booksTotal / booksToShow));
     fetchBooks();
-  }, [booksToShow, offset, selectedFilters]);
+    fetchBooksCount();
+  }, [booksToShow, selectedFilters]);
+
+  const buildFiltersUrl = (filters: Filters, baseUrl: string): string => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filters).forEach(([filterType, filterItems]) => {
+      // Check if the filter items exist and are not empty
+      if (filterItems && filterItems.length > 0) {
+        // Handle multiple values for the same filter type
+        if (filterItems.length > 1) {
+          const filterValues = filterItems
+            .map((item) => {
+              // Check if the filterType is "language"
+              if (filterType === "language") {
+                return `'${item.id}'`; // Enclose language value in single quotes
+              }
+              return item.id;
+            })
+            .join(",");
+          queryParams.append(filterType, filterValues);
+        } else {
+          if (filterType === "language") {
+            queryParams.append(filterType, `'${filterItems[0].id}'`); // Enclose language value in single quotes
+          } else {
+            queryParams.append(filterType, String(filterItems[0].id));
+          }
+        }
+      }
+    });
+    let url = "";
+    if (queryParams.toString() !== "") {
+      url = `/filters?${queryParams.toString()}`;
+    }
+
+    return url;
+  };
 
   const fetchBooks = async () => {
+    const offset = (currentPage - 1) * booksToShow;
     try {
-      let baseFetchUrl = "http://localhost:8080/book";
-      let url = `${baseFetchUrl}?limit=${booksToShow}&offset=${offset}`;
+      console.log("page", currentPage, "offset", offset);
+      const baseUrl = "http://localhost:8080/book";
+      let url = baseUrl;
 
-      if (genreParam) {
-        url += `&genre=${genreParam}`;
-      }
-      if (publisherParam) {
-        url += `&publisher=${publisherParam}`;
-      }
-      if (authorParam) {
-        url += `&author=${authorParam}`;
-      }
-      if (languageParam) {
-        url += `&language=${languageParam}`;
-      }
-
-      // Append authorization parameters if userId is present
       if (userId) {
-        url = `${baseFetchUrl}/authorized?limit=${booksToShow}&offset=${offset}&userId=${userId}`;
-        if (genreParam) {
-          url += `&genre=${genreParam}`;
-        }
-        if (publisherParam) {
-          url += `&publisher=${publisherParam}`;
-        }
-        if (authorParam) {
-          url += `&author=${authorParam}`;
-        }
-        if (languageParam) {
-          url += `&language=${languageParam}`;
-        }
+        url += `/authorized`;
+      }
+
+      const anyFiltersSelected = Object.values(selectedFilters).some(
+        (filterArray) => filterArray.length > 0
+      );
+      console.log("filters selected ", anyFiltersSelected);
+
+      if (anyFiltersSelected) {
+        const filtersUrl = buildFiltersUrl(selectedFilters, baseUrl);
+        url += filtersUrl;
+        url += `&userId=${userId}`;
+      } else {
+        url += `?limit=${booksToShow}&offset=${offset}&userId=${userId}`;
       }
 
       console.log(url);
@@ -87,6 +116,7 @@ function Catalog() {
       if (response.ok) {
         const data = await response.json();
         setBooks(data);
+        setBooksTotal(books.length);
         console.log(data);
       } else {
         console.error("Failed to fetch books:", response.statusText);
@@ -96,10 +126,55 @@ function Catalog() {
     }
   };
 
-  const handleLoadMoreClick = () => {
-    setOffset((prevOffset) => prevOffset + booksToShow);
-    setBooksToShow((prevBooksToShow) => prevBooksToShow + 20);
+  const fetchBooksCount = async () => {
+    try {
+      let url = "http://localhost:8080/book/count";
+
+      console.log(url);
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        setBooksTotal(data);
+        console.log(data);
+      } else {
+        console.error("Failed to fetch books:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    }
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    fetchBooks(); // Call fetchBooks to fetch books for the new page
+  };
+
+  const paginationButtons = [];
+  const maxButtonsToShow = 6; // Maximum number of buttons to show
+
+  // Calculate the start and end page numbers based on the current page
+  let startPage = Math.max(1, currentPage - Math.floor(maxButtonsToShow / 2));
+  let endPage = Math.min(totalPages, startPage + maxButtonsToShow - 1);
+
+  // Adjust the start and end page numbers if the range is less than maxButtonsToShow
+  if (endPage - startPage + 1 < maxButtonsToShow) {
+    startPage = Math.max(1, endPage - maxButtonsToShow + 1);
+  }
+
+  // Generate pagination buttons for the calculated range
+  for (let i = startPage; i <= endPage; i++) {
+    paginationButtons.push(
+      <button
+        key={i}
+        onClick={() => handlePageChange(i)}
+        className={`${styles.page} ${
+          currentPage === i ? styles.activePage : ""
+        }`}
+      >
+        {i}
+      </button>
+    );
+  }
 
   const handleFiltersChange = (filters: Filters) => {
     setSelectedFilters(filters);
@@ -147,6 +222,9 @@ function Catalog() {
     }));
     handleFiltersChange(selectedFilters);
   };
+  console.log("totalPages:", totalPages);
+  console.log("currentPage:", currentPage);
+  console.log("paginationButtons:", paginationButtons);
 
   return (
     <div className={styles.container}>
@@ -191,7 +269,19 @@ function Catalog() {
             />
           ))}
         </div>
-        <button onClick={handleLoadMoreClick}>load more</button>
+        <div className={styles.pagination}>
+          {currentPage > 1 && (
+            <button onClick={() => handlePageChange(currentPage - 1)}>
+              Prev
+            </button>
+          )}
+          {paginationButtons}
+          {currentPage < totalPages && (
+            <button onClick={() => handlePageChange(currentPage + 1)}>
+              Next
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

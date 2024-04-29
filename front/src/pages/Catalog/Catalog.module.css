@@ -46,3 +46,14 @@
 .filter p {
   color: #ffffff;
 }
+.page {
+  color: #e3502e;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+.activePage {
+  border-bottom: 2px solid #e3502e;
+}

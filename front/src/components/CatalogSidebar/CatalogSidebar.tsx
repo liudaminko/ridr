@@ -48,7 +48,7 @@ function CatalogSidebar({
 
         const mappedLanguages = dataLanguage.map(
           (language: { name: string }, index: number) => ({
-            id: index + 1,
+            id: language.name,
             name: language.name,
           })
         );
