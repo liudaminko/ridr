@@ -5,6 +5,7 @@ import com.ridr.back.model.Wishlist;
 import com.ridr.back.model.WishlistBooks;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,12 @@ public class WishlistRepository {
                 "WHERE c.id = " + userId +
                 " ORDER BY w.last_modified_at DESC";
 
-        return jdbcTemplate1.query(query, BeanPropertyRowMapper.newInstance(Wishlist.class));
+        try {
+            return jdbcTemplate1.query(query, BeanPropertyRowMapper.newInstance(Wishlist.class));
+        } catch (EmptyResultDataAccessException e) {
+            // Handle case where no wishlist is found
+            return null; // or any appropriate default value
+        }
     }
 
     public Wishlist getLastModifiedUserWishlist(int userId) {
@@ -34,7 +40,11 @@ public class WishlistRepository {
                 "WHERE c.id = ? " +
                 "ORDER BY w.last_modified_at DESC";
 
-        return jdbcTemplate1.queryForObject(query, new Object[]{userId}, new BeanPropertyRowMapper<>(Wishlist.class));
+        try {
+            return jdbcTemplate1.queryForObject(query, new Object[]{userId}, new BeanPropertyRowMapper<>(Wishlist.class));
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public WishlistBooks getUserWishlistById(int userId, int wishlistId) {

@@ -49,7 +49,7 @@ function Header() {
   }, [userId]);
 
   const handleOptionClick = (option: string) => {
-    console.log("Clicked:", option);
+    setShowDropdown(!showDropdown);
     if (option === "Settings") {
       navigation("/cabinet");
     } else if (option === "Orders") {

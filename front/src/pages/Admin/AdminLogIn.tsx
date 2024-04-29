@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import styles from "./AdminLogIn.module.css";
 
 interface AdminLogInProps {
   onLogin: () => void;
 }
 
 const AdminLogIn = ({ onLogin }: AdminLogInProps) => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
@@ -18,13 +17,12 @@ const AdminLogIn = ({ onLogin }: AdminLogInProps) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
       });
       if (response.ok) {
         const { token } = await response.json();
         localStorage.setItem("token", token);
         onLogin();
-        navigate("/admin");
       } else {
         setError("Invalid username or password");
       }
@@ -35,21 +33,28 @@ const AdminLogIn = ({ onLogin }: AdminLogInProps) => {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <h2>Login</h2>
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleLogin}>Login</button>
+      <div className={styles.form}>
+        <input
+          type="text"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className={styles.inputBox}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className={styles.inputBox}
+        />
+      </div>
+
+      <button onClick={handleLogin} className={styles.submitButton}>
+        Login
+      </button>
       {error && <p>{error}</p>}
     </div>
   );

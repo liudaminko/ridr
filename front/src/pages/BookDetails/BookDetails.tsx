@@ -1,7 +1,11 @@
 import styles from "./BookDetails.module.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import AddToCartButton from "../../components/AddToCartButton/AddToCartButton";
+import { useModal } from "../../ModalContext";
+import ErrorModal from "../../components/ErrorModal/ErrorModal";
+import WishlistModal from "../../components/WishlistModal/WishlistModal";
+import { WishlistProps } from "../../components/Book/Book";
 
 interface Author {
   id: number;
@@ -38,15 +42,21 @@ function BookDetails() {
   const [isFullDescription, setFullDescription] = useState(false);
   const [isBookDetailsOpened, setBookDetailsOpen] = useState(false);
   const [bookDetails, setBookDetails] = useState<BookDetails | null>(null);
+  const [userId, setUserId] = useState<string | null>(
+    localStorage.getItem("userId")
+  );
+  const [cartStatus, setCartStatus] = useState<string | null>(null);
+  const { toggleCart, toggleErrorPopup, setErrorPopupText } = useModal();
+  const [modalVisibility, setModalVisibility] = useState(false);
+
+  const [wishlists, setWishlists] = useState<WishlistProps[]>([]);
 
   useEffect(() => {
-    console.log("requesting...");
     const fetchBookDetails = async () => {
       try {
         const response = await fetch(
           `http://localhost:8080/book/fullinfo?bookId=${id}`
         );
-        console.log(id);
         if (response.ok) {
           const data = await response.json();
           const parsedData = {
@@ -78,12 +88,70 @@ function BookDetails() {
     setBookDetailsOpen(!isBookDetailsOpened);
   };
 
-  const handleAddToCartClick = () => {
-    console.log("added to cart:", bookDetails?.id);
+  const handleAddToCart = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+
+    try {
+      const response = await fetch("http://localhost:8080/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          bookId: parseInt(id || "0"),
+          userId: parseInt(userId || "0"),
+        }),
+      });
+      if (response.ok) {
+        setCartStatus("Book added to cart successfully.");
+        toggleCart();
+      } else {
+        setCartStatus("Failed to add book to cart.");
+      }
+    } catch (error) {
+      console.error("Error adding book to cart:", error);
+      setCartStatus("Error adding book to cart.");
+    }
   };
 
   const handleLikeButtonClick = () => {
-    console.log("liked:", bookDetails?.id);
+    if (userId != null) {
+      setModalVisibility(!modalVisibility);
+    } else {
+      setErrorPopupText("please log in/sign up to add book to your wishlist");
+      toggleErrorPopup();
+      return;
+    }
+  };
+
+  const closeModal = () => {
+    setModalVisibility(!modalVisibility);
+  };
+
+  const handleAddToWishlist = async (wishlistId: number) => {
+    try {
+      const response = await fetch("http://localhost:8080/wishlist/like", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          wishlistId: wishlistId,
+          bookId: id,
+          userId: parseInt(userId || "0"),
+        }),
+      });
+      if (response.ok) {
+        console.log("Book added to wishlist successfully");
+        setModalVisibility(!modalVisibility);
+      } else {
+        console.error("Failed to add book to wishlist");
+      }
+    } catch (error) {
+      console.error("Error adding book to wishlist:", error);
+    }
   };
 
   return (
@@ -200,7 +268,9 @@ function BookDetails() {
           )}
           <h1 className={styles.characteristicsName}>${bookDetails?.price}</h1>
           <div className={styles.actionButtons}>
-            <AddToCartButton onClick={handleAddToCartClick} />
+            <button onClick={handleAddToCart} className={styles.cartButton}>
+              Add to cart
+            </button>
             <button
               className={styles.wishlistButton}
               onClick={handleLikeButtonClick}
@@ -210,6 +280,14 @@ function BookDetails() {
           </div>
         </div>
       </div>
+      <ErrorModal />
+      {modalVisibility && (
+        <WishlistModal
+          wishlists={wishlists}
+          onClose={closeModal}
+          onAddToWishlist={handleAddToWishlist}
+        />
+      )}
     </div>
   );
 }

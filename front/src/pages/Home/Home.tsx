@@ -19,9 +19,14 @@ function Home() {
   useEffect(() => {
     const fetchPopularBoooks = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/book/popularmonth?userId=${userId}`
-        );
+        let url;
+        if (userId) {
+          url = `http://localhost:8080/book/popularmonth?userId=${userId}`;
+        } else {
+          url = `http://localhost:8080/book/popularmonth/nonauthorized`;
+        }
+
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }
@@ -33,9 +38,14 @@ function Home() {
     };
     const fetchNewBoooks = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/book/new?userId=${userId}`
-        );
+        let url;
+        if (userId) {
+          url = `http://localhost:8080/book/new?userId=${userId}`;
+        } else {
+          url = `http://localhost:8080/book/new/nonauthorized`;
+        }
+
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }

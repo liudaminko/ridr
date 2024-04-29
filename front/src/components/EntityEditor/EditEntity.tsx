@@ -93,7 +93,6 @@ function EditEntity({
 
   const handleExecuteRequest = async () => {
     const baseUrl = `http://localhost:8080/${title.toLowerCase()}`;
-    console.log(baseUrl);
 
     try {
       let requestOptions: any = {

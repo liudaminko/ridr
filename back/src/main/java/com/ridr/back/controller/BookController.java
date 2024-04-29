@@ -41,12 +41,20 @@ public class BookController {
         return repository.getShortInfoBookAuthorized(userId, bookId);
     }
     @GetMapping("/new")
-    public List<ShortInfoBook> getNewBooks(@RequestParam int userId) {
-        return repository.getNewBooksLastMonth(userId);
+    public List<ShortInfoBook> getNewBooksAuthorized(@RequestParam int userId) {
+        return repository.getNewBooksLastMonthAuthorized(userId);
+    }
+    @GetMapping("/new/nonauthorized")
+    public List<ShortInfoBook> getNewBooksNonAuthorized() {
+        return repository.getNewBooksLastMonthNotAuthorized();
     }
     @GetMapping("/popularmonth")
-    public List<ShortInfoBook> getPopularBooksDuringLastMonth(@RequestParam int userId) {
-        return repository.getMostPopularBooksInLastMonth(userId);
+    public List<ShortInfoBook> getPopularBooksDuringLastMonth(@RequestParam Integer userId) {
+        return repository.getMostPopularBooksInLastMonthAuthorized(userId);
+    }
+    @GetMapping("/popularmonth/nonauthorized")
+    public List<ShortInfoBook> getPopularBooksDuringLastMonth() {
+        return repository.getMostPopularBooksInLastMonthNotAuthorized();
     }
     @GetMapping(params = "limit")
     public List<FullInfoBook> getBooksLimited(@RequestParam int limit) {

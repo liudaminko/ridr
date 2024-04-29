@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import styles from "./Wishlist.module.css";
 import Book from "../../components/Book/Book";
+import { useModal } from "../../ModalContext";
+import ErrorModal from "../../components/ErrorModal/ErrorModal";
 
 interface WishlistProps {
   id: number;
@@ -41,6 +43,8 @@ function Wishlist() {
   const [updatedWishlistName, setUpdatedWishlistName] = useState("");
   const [wishlistToChangeId, setWishlistToChangeId] = useState(-1);
 
+  const { toggleErrorPopup, setErrorPopupText } = useModal();
+
   const [userId, setUserId] = useState<string | null>(
     localStorage.getItem("userId")
   );
@@ -52,14 +56,20 @@ function Wishlist() {
       const response = await fetch(
         `http://localhost:8080/wishlist/all?userId=${userId}`
       );
-      if (response.ok) {
+      if (response.ok && response != null) {
         const data = await response.json();
         setWishlists(data);
+      } else if (response === null) {
+        setErrorPopupText("you don't have any wishlists");
+        toggleErrorPopup();
+        setError("No wishlists");
+        return;
       } else {
+        console.log(response);
         setError("Failed to fetch wishlists");
       }
     } catch (error) {
-      setError("Error fetching wishlists");
+      setError("Error here");
     } finally {
       setLoading(false);
     }
@@ -72,7 +82,7 @@ function Wishlist() {
       const response = await fetch(
         `http://localhost:8080/wishlist/recent?userId=${userId}`
       );
-      if (response.ok) {
+      if (response.ok && response != null) {
         const data = await response.json();
         setRecentWishlist(data);
         setSelectedWishlist(data);
@@ -80,7 +90,9 @@ function Wishlist() {
         setError("Failed to fetch recent wishlist");
       }
     } catch (error) {
-      setError("Error fetching recent wishlist");
+      setErrorPopupText("you don't have any wishlists");
+      toggleErrorPopup();
+      setError("No wishlists");
     } finally {
       setLoading(false);
     }
@@ -92,30 +104,36 @@ function Wishlist() {
   }, [userId]);
 
   useEffect(() => {
-    const fetchWishlistBooks = async () => {
-      if (recentWishlist) {
-        setLoading(true);
-        setError(null);
-        try {
-          const response = await fetch(
-            `http://localhost:8080/wishlist?userId=${userId}&wishlistId=${recentWishlist.id}`
-          );
-          if (response.ok) {
-            const data = await response.json();
-            setWishlistBooks(data.books);
-          } else {
-            setError("Failed to fetch wishlist books");
+    if (recentWishlist != null) {
+      const fetchWishlistBooks = async () => {
+        if (recentWishlist) {
+          setLoading(true);
+          setError(null);
+          try {
+            const response = await fetch(
+              `http://localhost:8080/wishlist?userId=${userId}&wishlistId=${recentWishlist.id}`
+            );
+            if (response.ok && response != null) {
+              const data = await response.json();
+              setWishlistBooks(data.books);
+              console.log(response);
+            } else if (response === null) {
+              setErrorPopupText("you don't have any wishlists");
+              toggleErrorPopup();
+              setError("No wishlists");
+            } else {
+              setError("Failed to fetch wishlist books");
+            }
+          } catch (error) {
+            setError("Error fetching wishlist books");
+          } finally {
+            setLoading(false);
           }
-        } catch (error) {
-          setError("Error fetching wishlist books");
-        } finally {
-          setLoading(false);
         }
-      }
-    };
-
-    fetchWishlistBooks();
-  }, [recentWishlist, userId]);
+      };
+      fetchWishlistBooks();
+    }
+  }, [recentWishlist]);
 
   const toggleModalVisibility = (
     wishlist: WishlistProps,
@@ -385,6 +403,7 @@ function Wishlist() {
           </div>
         )}
       </div>
+      <ErrorModal />
     </div>
   );
 }

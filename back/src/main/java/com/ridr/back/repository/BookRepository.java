@@ -107,7 +107,7 @@ public class BookRepository {
         return jdbcTemplate1.query(query, new Object[]{"%" + keywords + "%", "%" + keywords + "%", "%" + keywords + "%"}, new BeanPropertyRowMapper<>(ShortInfoBook.class));
     }
 
-    public List<ShortInfoBook> getNewBooksLastMonth(int userId) {
+    public List<ShortInfoBook> getNewBooksLastMonthAuthorized(int userId) {
         String query = "SELECT TOP 10 b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price, COALESCE(w.liked, 0) AS liked " +
                 "From Book b " +
                 "JOIN Book_Authors ba ON b.id = ba.book_id " +
@@ -117,11 +117,20 @@ public class BookRepository {
                 "JOIN Wishlist w ON bw.wishlist_id = w.id " +
                 "WHERE w.customer_id = ? " +
                 ") w ON b.id = w.book_id " +
-                "WHERE b.added_at >= DATEADD(MONTH, -1, GETDATE())";
+                "WHERE b.added_at >= DATEADD(MONTH, -1, GETDATE()) AND b.is_active = 1";
         return jdbcTemplate1.query(query, new Object[]{userId}, new BeanPropertyRowMapper<>(ShortInfoBook.class));
     }
 
-    public List<ShortInfoBook> getMostPopularBooksInLastMonth(int userId) {
+    public List<ShortInfoBook> getNewBooksLastMonthNotAuthorized() {
+        String query = "SELECT TOP 10 b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price " +
+                "From Book b " +
+                "JOIN Book_Authors ba ON b.id = ba.book_id " +
+                "JOIN Author a ON ba.author_id = a.id " +
+                "WHERE b.added_at >= DATEADD(MONTH, -1, GETDATE()) AND b.is_active = 1";
+        return jdbcTemplate1.query(query, new BeanPropertyRowMapper<>(ShortInfoBook.class));
+    }
+
+    public List<ShortInfoBook> getMostPopularBooksInLastMonthAuthorized(int userId) {
         String query = "SELECT TOP 10 bs.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price, COALESCE(bs.total_sold, 0) AS sold, COALESCE(w.liked, 0) AS liked " +
                 "FROM ( " +
                 "SELECT bo.book_id AS id, SUM(bo.quantity) AS total_sold FROM Book_Order bo " +
@@ -135,10 +144,26 @@ public class BookRepository {
                 "LEFT JOIN (" +
                 "SELECT bw.book_id, 1 AS liked FROM Book_Wishlist bw " +
                 "JOIN Wishlist w ON bw.wishlist_id = w.id " +
-                "WHERE w.customer_id = ? " +
+                "WHERE w.customer_id = ? AND b.is_active = 1" +
                 ") w ON b.id = w.book_id " +
                 "ORDER BY sold DESC";
         return jdbcTemplate1.query(query, new Object[]{userId}, new BeanPropertyRowMapper<>(ShortInfoBook.class));
+    }
+    public List<ShortInfoBook> getMostPopularBooksInLastMonthNotAuthorized() {
+        String query = "SELECT TOP 10 bs.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price, COALESCE(bs.total_sold, 0) AS sold " +
+                "FROM ( " +
+                "SELECT bo.book_id AS id, SUM(bo.quantity) AS total_sold FROM Book_Order bo " +
+                "JOIN Order_ o ON bo.order_id = o.id " +
+                "WHERE o.date >= DATEADD(MONTH, -1, GETDATE()) " +
+                "GROUP BY bo.book_id " +
+                ") bs " +
+                "JOIN Book b ON bs.id = b.id " +
+                "JOIN Book_Authors ba ON b.id = ba.book_id " +
+                "JOIN Author a ON ba.author_id = a.id " +
+                "WHERE b.is_active = 1 " +
+                "ORDER BY sold DESC";
+
+        return jdbcTemplate1.query(query, new BeanPropertyRowMapper<>(ShortInfoBook.class));
     }
 
     public List<FullInfoBook> getAllWithLimit(int limit) {

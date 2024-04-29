@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: calc(60vh - 105px);
+    gap: 32px;
+    align-items: center;
+}
+.form {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+.inputBox {
+    padding: 8px 32px;
+    width: 50%;
+    font-size: large;
+    border-radius: 8px;
+    background-color: #fafafa;
+    border: 1px solid #f2f2f2;
+    color: #2b2b2b;
+    padding-left: 8px;
+    outline: 2px solid #f2f2f2;
+}
+.inputBox:focus-visible {
+    border: 1px solid #a4ae9d;
+    outline: 2px solid #a4ae9d;
+}
+.submitButton {
+    border: none;
+    padding: 16px 24px;
+    border-radius: 36px;
+    background-color: #e3502e;
+    cursor: pointer;
+}

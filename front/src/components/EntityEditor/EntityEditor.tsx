@@ -60,12 +60,8 @@ function EntityEditor({
                 id={field.id}
                 name={field.name}
                 className={styles.inputSmall}
-                value={field.value} // Use field.value to reflect current state
+                value={field.value}
                 onChange={(e) => {
-                  console.log(
-                    `Field ${field.id} value changed:`,
-                    e.target.value
-                  );
                   field.onChange(field.id, e.target.value);
                 }}
               />

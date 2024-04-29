@@ -76,10 +76,7 @@ function CatalogSidebar({
 
         for (const [key, value] of queryParams.entries()) {
           const filterType = key.replace(/\[\]$/, "");
-          console.log("Filter type:", filterType, "Filter value:", value);
-          console.log("Filters:", filters);
           if (filters && filters[filterType as keyof Filters]) {
-            console.log("HERE");
             const filterId = parseInt(value);
             const filterItem = filters[filterType as keyof Filters].find(
               (item: FilterItem) => item.id === filterId
@@ -88,14 +85,12 @@ function CatalogSidebar({
               initialSelectedFilters[filterType as keyof Filters].push(
                 filterItem
               );
-              console.log("Filter item added:", filterItem);
             } else {
               console.log("No filter item found for ID:", filterId);
             }
           }
         }
 
-        console.log("Initial selected filters:", initialSelectedFilters);
         setSelectedFilters(initialSelectedFilters);
         applyFilters();
       } catch (error) {

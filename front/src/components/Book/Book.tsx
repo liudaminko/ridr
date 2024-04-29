@@ -3,6 +3,7 @@ import styles from "./Book.module.css";
 import { useEffect, useState } from "react";
 import { useModal } from "../../ModalContext";
 import WishlistModal from "../WishlistModal/WishlistModal";
+import ErrorModal from "../ErrorModal/ErrorModal";
 
 interface BookProps {
   id: number;
@@ -13,7 +14,7 @@ interface BookProps {
   liked: boolean;
   width: string;
 }
-interface WishlistProps {
+export interface WishlistProps {
   id: number;
   name: string;
   customer_id: number;
@@ -39,11 +40,18 @@ function Book({
   const { toggleCart } = useModal();
   const [modalVisibility, setModalVisibility] = useState(false);
   const [wishlists, setWishlists] = useState<WishlistProps[]>([]);
+  const { toggleErrorPopup, setErrorPopupText } = useModal();
 
   const handleLikeClick = (event: React.MouseEvent<HTMLImageElement>) => {
+    if (userId != null) {
+      setModalVisibility(!modalVisibility);
+    } else {
+      setErrorPopupText("please log in/sign up to add book to your wishlist");
+      toggleErrorPopup();
+      return;
+    }
     event.stopPropagation();
     event.preventDefault();
-    setModalVisibility(!modalVisibility);
   };
 
   const handleAddToCart = async (
@@ -174,6 +182,7 @@ function Book({
           onAddToWishlist={handleAddToWishlist}
         />
       )}
+      <ErrorModal />
     </div>
   );
 }

@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import styles from "./Admin.module.css";
 import EntityEditor from "../../components/EntityEditor/EntityEditor";
 import BookEntityEditor from "../../components/EntityEditor/BookEntityEditor";
-import Dashboard1 from "../../components/Dashboards/Dashboards";
-import Dashboard2 from "../../components/Dashboards/Dashboard2";
 import Dashboards from "../../components/Dashboards/Dashboards";
+import AdminLogIn from "./AdminLogIn";
 
 function Admin() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
   const [selectedWindow, setSelectedWindow] = useState("entity");
   const [publisherFields, setPublisherFields] = useState([
     {
@@ -396,72 +400,78 @@ function Admin() {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Admin Dashboard</h1>
-        <img src="/admin.png" style={{ height: "40px" }} alt="Admin" />
-      </div>
-      <div className={styles.windowsChanger}>
-        <button
-          onClick={() => setSelectedWindow("entity")}
-          className={`${styles.action} ${
-            selectedWindow === "entity" ? styles.selected : ""
-          }`}
-        >
-          Book Editor
-        </button>
-        <button
-          onClick={() => setSelectedWindow("dash")}
-          className={`${styles.action} ${
-            selectedWindow === "dash" ? styles.selected : ""
-          }`}
-        >
-          Dashboards
-        </button>
-      </div>
-      {selectedWindow === "entity" ? (
-        <div className={styles.entitiesContainer}>
-          <EntityEditor
-            title="Publisher"
-            fields={publisherFields}
-            filters={publisherFilterNames}
-            deleteField={publisherDeleteField}
-            handleEditInputChange={handleEditInputChange}
-            setFields={setPublisherFields}
-          />
-          <EntityEditor
-            title="Genre"
-            fields={genreFields}
-            filters={genreFilterNames}
-            deleteField={genreDeleteField}
-            handleEditInputChange={handleEditInputChange}
-            setFields={setGenreFields}
-          />
-          <EntityEditor
-            title="Author"
-            fields={authorFields}
-            filters={authorFilterNames}
-            deleteField={authorDeleteField}
-            handleEditInputChange={handleEditInputChange}
-            setFields={setAuthorFields}
-          />
-          <BookEntityEditor
-            title="Book"
-            fields={bookFields}
-            filters={bookFilterNames}
-            deleteField={bookDeleteField}
-          />
-          <EntityEditor
-            title="Book's Authors"
-            fields={bookAuthorsFields}
-            filters={bookAuthorsFilterNames}
-            deleteField={bookAuthorsDeleteField}
-            handleEditInputChange={handleEditInputChange}
-            setFields={setBookAuthorsFields}
-          />
-        </div>
+    <div>
+      {!isLoggedIn ? (
+        <AdminLogIn onLogin={handleLogin} />
       ) : (
-        <Dashboards />
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <h1 className={styles.title}>Admin Dashboard</h1>
+            <img src="/admin.png" style={{ height: "40px" }} alt="Admin" />
+          </div>
+          <div className={styles.windowsChanger}>
+            <button
+              onClick={() => setSelectedWindow("entity")}
+              className={`${styles.action} ${
+                selectedWindow === "entity" ? styles.selected : ""
+              }`}
+            >
+              Book Editor
+            </button>
+            <button
+              onClick={() => setSelectedWindow("dash")}
+              className={`${styles.action} ${
+                selectedWindow === "dash" ? styles.selected : ""
+              }`}
+            >
+              Dashboards
+            </button>
+          </div>
+          {selectedWindow === "entity" ? (
+            <div className={styles.entitiesContainer}>
+              <EntityEditor
+                title="Publisher"
+                fields={publisherFields}
+                filters={publisherFilterNames}
+                deleteField={publisherDeleteField}
+                handleEditInputChange={handleEditInputChange}
+                setFields={setPublisherFields}
+              />
+              <EntityEditor
+                title="Genre"
+                fields={genreFields}
+                filters={genreFilterNames}
+                deleteField={genreDeleteField}
+                handleEditInputChange={handleEditInputChange}
+                setFields={setGenreFields}
+              />
+              <EntityEditor
+                title="Author"
+                fields={authorFields}
+                filters={authorFilterNames}
+                deleteField={authorDeleteField}
+                handleEditInputChange={handleEditInputChange}
+                setFields={setAuthorFields}
+              />
+              <BookEntityEditor
+                title="Book"
+                fields={bookFields}
+                filters={bookFilterNames}
+                deleteField={bookDeleteField}
+              />
+              <EntityEditor
+                title="Book's Authors"
+                fields={bookAuthorsFields}
+                filters={bookAuthorsFilterNames}
+                deleteField={bookAuthorsDeleteField}
+                handleEditInputChange={handleEditInputChange}
+                setFields={setBookAuthorsFields}
+              />
+            </div>
+          ) : (
+            <Dashboards />
+          )}
+        </div>
       )}
     </div>
   );
