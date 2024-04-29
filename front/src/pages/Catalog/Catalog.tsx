@@ -25,10 +25,36 @@ export interface Book {
 function Catalog() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const publisherParam = queryParams.get("publisher");
-  const genreParam = queryParams.get("genre");
-  const authorParam = queryParams.get("author");
-  const languageParam = queryParams.get("language");
+
+  const publisherParam = queryParams.getAll("publisher");
+  const genreParam = queryParams.getAll("genre");
+  const authorParam = queryParams.getAll("author");
+  const languageParam = queryParams.getAll("language");
+
+  // Convert filter values to FilterItem arrays
+  const publisherFilters: FilterItem[] = publisherParam.map((id) => ({
+    id: parseInt(id),
+    name: "publisher",
+  }));
+  const genreFilters: FilterItem[] = genreParam.map((id) => ({
+    id: parseInt(id),
+    name: "genre",
+  }));
+  const authorFilters: FilterItem[] = authorParam.map((id) => ({
+    id: parseInt(id),
+    name: "author",
+  }));
+  const languageFilters: FilterItem[] = languageParam.map((id) => ({
+    id: parseInt(id),
+    name: "language",
+  }));
+
+  const [selectedFilters, setSelectedFilters] = useState<Filters>({
+    publisher: publisherFilters,
+    genre: genreFilters,
+    author: authorFilters,
+    language: languageFilters,
+  });
 
   const [books, setBooks] = useState<Book[]>([]);
   const [booksTotal, setBooksTotal] = useState(0);
@@ -41,9 +67,6 @@ function Catalog() {
 
   const [userId, setUserId] = useState<string | null>(
     localStorage.getItem("userId")
-  );
-  const [selectedFilters, setSelectedFilters] = useState<Filters>(
-    {} as Filters
   );
 
   useEffect(() => {
@@ -106,7 +129,7 @@ function Catalog() {
       if (anyFiltersSelected) {
         const filtersUrl = buildFiltersUrl(selectedFilters, baseUrl);
         url += filtersUrl;
-        url += `&userId=${userId}`;
+        url += `&userId=${userId}&limit=${booksToShow}&offset=${offset}`;
       } else {
         url += `?limit=${booksToShow}&offset=${offset}&userId=${userId}`;
       }
@@ -211,9 +234,11 @@ function Catalog() {
     if (checkbox) {
       checkbox.checked = false;
     }
+    handleFilterRemove(filterType, filterId);
   };
 
   const handleFilterRemove = (filterType: keyof Filters, filterId: number) => {
+    console.log("FUCK U");
     setSelectedFilters((prevFilters) => ({
       ...prevFilters,
       [filterType]: prevFilters[filterType].filter(
@@ -221,10 +246,17 @@ function Catalog() {
       ),
     }));
     handleFiltersChange(selectedFilters);
+
+    const queryParams = new URLSearchParams(location.search);
+    queryParams.delete(filterType);
+    setSelectedFilters((prevFilters) => ({
+      ...prevFilters,
+      [filterType]: prevFilters[filterType].filter(
+        (filter) => filter.id !== filterId
+      ),
+    }));
+    navigate(`?${queryParams.toString()}`);
   };
-  console.log("totalPages:", totalPages);
-  console.log("currentPage:", currentPage);
-  console.log("paginationButtons:", paginationButtons);
 
   return (
     <div className={styles.container}>

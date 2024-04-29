@@ -74,8 +74,11 @@ public class BookController {
             @RequestParam(required = false, name = "genre") List<Long> genres,
             @RequestParam(required = false, name = "language") List<String> languages,
             @RequestParam(required = false, name = "publisher") List<Long> publishers,
-            @RequestParam(required = false, name = "author") List<Long> authors
-    ) {
+            @RequestParam(required = false, name = "author") List<Long> authors,
+            @RequestParam(required = true, name = "limit") int limit,
+            @RequestParam(required = true, name = "offset") int offset,
+            @RequestParam(required = true, name = "userId") int userId
+            ) {
 
         if (genres == null) {
             genres = new ArrayList<>();
@@ -96,7 +99,7 @@ public class BookController {
             authors = new ArrayList<>();
         }
 
-        return repository.findAllBooksByFilters(genres, languages, publishers, authors);
+        return repository.findAllBooksByFilters(genres, languages, publishers, authors, limit, offset, userId);
     }
 
     @PostMapping

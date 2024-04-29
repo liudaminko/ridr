@@ -237,14 +237,19 @@ public class BookRepository {
         return jdbcTemplate1.query(query, new BeanPropertyRowMapper<>(ShortInfoBook.class));
     }
 
-    public List<ShortInfoBook> findAllBooksByFilters(List<Long> genres, List<String> languages, List<Long> publishers, List<Long> authors) {
+    public List<ShortInfoBook> findAllBooksByFilters(List<Long> genres, List<String> languages, List<Long> publishers, List<Long> authors, int limit, int offset, int userId) {
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("SELECT DISTINCT b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price ")
+        queryBuilder.append("SELECT DISTINCT b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price, COALESCE(w.liked, 0) AS liked ")
                 .append("FROM Book b ")
                 .append("JOIN Book_Authors ba ON ba.book_id = b.id ")
                 .append("JOIN Author a ON a.id = ba.author_id ")
                 .append("JOIN Genre g ON g.id = b.genre_id ")
-                .append("WHERE b.is_active = 1");
+                .append("LEFT JOIN (")
+                .append("SELECT bw.book_id, 1 AS liked FROM Book_Wishlist bw ")
+                .append("JOIN Wishlist w ON bw.wishlist_id = w.id ")
+                .append("WHERE w.customer_id = ?")
+                .append(" ) w ON b.id = w.book_id ")
+                .append("WHERE b.is_active = 1 ");
 
         if (!genres.isEmpty()) {
             queryBuilder.append(" AND g.id IN (");
@@ -282,7 +287,7 @@ public class BookRepository {
         if (!languages.isEmpty()) {
             queryBuilder.append(" AND b.language IN (");
             for (int i = 0; i < languages.size(); i++) {
-                queryBuilder.append(languages.get(i));
+                queryBuilder.append("'").append(languages.get(i)).append("'");
                 if (i < languages.size() - 1) {
                     queryBuilder.append(", ");
                 }
@@ -293,8 +298,15 @@ public class BookRepository {
         // Append ORDER BY clause
         queryBuilder.append(" ORDER BY b.id");
 
+        // Append OFFSET clause
+        queryBuilder.append(" OFFSET ").append(offset).append(" ROWS ");
+        queryBuilder.append("FETCH NEXT ").append(limit).append(" ROWS ONLY");
+
         String query = queryBuilder.toString();
-        return jdbcTemplate1.query(query, new BeanPropertyRowMapper<>(ShortInfoBook.class));
+        System.out.println("Generated SQL Query: " + query);
+
+
+        return jdbcTemplate1.query(query, new Object[]{userId},new BeanPropertyRowMapper<>(ShortInfoBook.class));
         // Execute the query and return the result
     }
 
