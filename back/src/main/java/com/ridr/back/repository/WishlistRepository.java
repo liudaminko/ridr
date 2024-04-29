@@ -8,7 +8,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -85,5 +87,19 @@ public class WishlistRepository {
             System.err.println("Duplicate entry detected. The book is already in the wishlist.");
             return -1;
         }
+    }
+
+    @Transactional
+    public int delete(int userId, int wishlistId) {
+        String deleteBooksFromWishlistQuery = "DELETE FROM Book_Wishlist WHERE wishlist_id = ?";
+        jdbcTemplate1.update(deleteBooksFromWishlistQuery, wishlistId);
+
+        String deleteWishlistQuery = "DELETE FROM Wishlist WHERE customer_id = ? AND id = ?";
+        return jdbcTemplate1.update(deleteWishlistQuery, userId, wishlistId);
+    }
+
+    public int updateWishlistName(Integer wishlistId, Integer userId, String newName) {
+        String query = "UPDATE Wishlist SET name = ?, last_modified_at = ? WHERE id = ? AND customer_id = ?";
+        return  jdbcTemplate1.update(query, newName, LocalDateTime.now(), wishlistId, userId);
     }
 }

@@ -19,3 +19,10 @@ p {
 .header {
   margin-bottom: 16px;
 }
+.link {
+  padding: 8px 16px;
+  display: flex;
+  text-decoration: none;
+  color: #2b2b2b;
+  justify-content: left;
+}

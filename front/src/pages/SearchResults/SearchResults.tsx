@@ -25,7 +25,7 @@ function SearchResults() {
     const fetchBooks = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/catalog/search?keywords=${q}`
+          `http://localhost:8080/book/search?keywords=${q}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch books");

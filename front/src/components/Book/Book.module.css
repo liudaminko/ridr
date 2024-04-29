@@ -16,6 +16,7 @@
   height: 24px;
   opacity: 0;
   transition: opacity 0.3s ease;
+  cursor: pointer;
 }
 
 .container:hover .likeBook {
@@ -69,4 +70,5 @@ justify-content: center;
   padding: 8px 24px;
   border-radius: 16px;
   background-color: #e3502e;
+  cursor: pointer;
 }

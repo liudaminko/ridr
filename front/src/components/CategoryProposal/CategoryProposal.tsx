@@ -1,4 +1,6 @@
+import { useState } from "react";
 import styles from "./CategoryProposal.module.css";
+import { useNavigate } from "react-router-dom";
 
 interface Category {
   name: string;
@@ -16,10 +18,23 @@ function CategoryProposal() {
     { name: "kids" },
   ];
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const history = useNavigate();
+
+  const handleSearch = (category: string) => {
+    if (searchQuery.trim() !== "") {
+      history(`/search/${category}`);
+    }
+  };
+
   return (
     <div className={styles.container}>
       {categories.map((category, index) => (
-        <div key={index} className={styles.category}>
+        <div
+          key={index}
+          className={styles.category}
+          onClick={() => handleSearch(category.name)}
+        >
           {category.name}
 
           {index === 0 && category.image && (

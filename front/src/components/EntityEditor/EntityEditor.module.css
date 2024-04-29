@@ -35,9 +35,10 @@
     align-items: center;
 }
 .fetchingFilters {
+    width: 100%;
     display: flex;
     gap: 32px;
-    align-items: center;
+
 }
 .filterProps {
     display: flex;
@@ -75,6 +76,31 @@
     border: 1px solid #a4ae9d;
     outline: 2px solid #a4ae9d;
   }
+  .inputSmall {
+    padding: 4px 16px;
+    width: 50%;
+    font-size: large;
+    border-radius: 8px;
+    background-color: #f2f2f2;
+    border: 1px solid #d9d9d9;
+    color: #2b2b2b;
+    padding-left: 8px;
+    outline: 1px solid #d9d9d9;
+  }
+  .select {
+    padding: 4px 16px;
+    font-size: large;
+    border-radius: 8px;
+    background-color: #f2f2f2;
+    border: 1px solid #d9d9d9;
+    color: #2b2b2b;
+    padding-left: 8px;
+    outline: 1px solid #d9d9d9;
+  }
+  .inputSmall:focus-visible {
+    border: 1px solid #a4ae9d;
+    outline: 1px solid #a4ae9d;
+  }
 .formControl {
     font-family: system-ui, sans-serif;
     line-height: 1.1;
@@ -94,11 +120,15 @@
     background-color: #a4ae9d;
     border-radius: 20px;
     height: min-content;
+    cursor: pointer;
 }
 .filters {
     display: flex;
     gap: 16px;
+    width: 100%;
     flex-direction: column;
+    align-items: flex-start;
+    justify-content: left;
 }
 .filterLabel {
     padding: 8px 16px;
@@ -113,4 +143,28 @@
 .filterItem {
     display: flex;
     gap: 8px;
+    align-items: flex-start;
+    width: 100%;
+    justify-content: left;
 }
+.searchContainer {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+  
+  /* Adjust width and margin for select and input */
+  .searchContainer select,
+  .searchContainer input {
+    width: 48%; /* 48% to account for 2% space between elements */
+    margin-right: 2%; /* 2% space between elements */
+  }
+  .field {
+    display: flex;
+    width: 100%;
+  }
+  .inputSearch {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }

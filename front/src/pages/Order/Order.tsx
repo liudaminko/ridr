@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import styles from "./Order.module.css";
-import { transliterate as tr, slugify } from "transliteration";
-
-//declare const google: any;
 
 interface CartItem {
   customerId: number;

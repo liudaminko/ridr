@@ -20,6 +20,9 @@ interface BookProps {
 
 function Wishlist() {
   const [newListModalVisibility, setNewListModalVisibility] = useState(false);
+  const [updateListModalVisibility, setUpdateListModalVisibility] =
+    useState(false);
+
   const [modalVisibility, setModalVisibility] = useState(false);
   const [selectedWishlist, setSelectedWishlist] =
     useState<WishlistProps | null>(null);
@@ -35,53 +38,55 @@ function Wishlist() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [newWishlistName, setNewWishlistName] = useState("");
+  const [updatedWishlistName, setUpdatedWishlistName] = useState("");
+  const [wishlistToChangeId, setWishlistToChangeId] = useState(-1);
 
   const [userId, setUserId] = useState<string | null>(
     localStorage.getItem("userId")
   );
 
+  const fetchWishlists = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `http://localhost:8080/wishlist/all?userId=${userId}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setWishlists(data);
+      } else {
+        setError("Failed to fetch wishlists");
+      }
+    } catch (error) {
+      setError("Error fetching wishlists");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRecentWishlist = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `http://localhost:8080/wishlist/recent?userId=${userId}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setRecentWishlist(data);
+        setSelectedWishlist(data);
+      } else {
+        setError("Failed to fetch recent wishlist");
+      }
+    } catch (error) {
+      setError("Error fetching recent wishlist");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchWishlists = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(
-          `http://localhost:8080/wishlist/all?userId=${userId}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setWishlists(data);
-        } else {
-          setError("Failed to fetch wishlists");
-        }
-      } catch (error) {
-        setError("Error fetching wishlists");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchRecentWishlist = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(
-          `http://localhost:8080/wishlist/recent?userId=${userId}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setRecentWishlist(data);
-          setSelectedWishlist(data);
-        } else {
-          setError("Failed to fetch recent wishlist");
-        }
-      } catch (error) {
-        setError("Error fetching recent wishlist");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchWishlists();
     fetchRecentWishlist();
   }, [userId]);
@@ -124,18 +129,36 @@ function Wishlist() {
   const toggleCreateListModalVisibility = () => {
     setNewListModalVisibility(!newListModalVisibility);
   };
-
-  const handleDeleteWishlist = (wishlistId: number) => {
-    console.log("Deleting wishlist with ID:", wishlistId);
+  const toggleUpdateListModalVisibility = () => {
+    setUpdateListModalVisibility(!updateListModalVisibility);
   };
 
-  const handleChangeTitle = (wishlistId: number, newTitle: string) => {
-    console.log(
-      "Changing title of wishlist with ID:",
-      wishlistId,
-      "to:",
-      newTitle
-    );
+  const handleDeleteWishlist = async (wishlistId: number) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = await fetch(
+        `http://localhost:8080/wishlist?userId=${userId}&wishlistId=${wishlistId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to delete item from cart");
+      }
+      const updatedWishlists = wishlists.filter(
+        (wishlist) => wishlist.id !== wishlistId
+      );
+      setWishlists(updatedWishlists);
+    } catch (error) {
+      console.error("Error deleting item from cart:", error);
+    }
+    setModalVisibility(!modalVisibility);
+  };
+
+  const handleChangeTitle = (wishlist: number) => {
+    setWishlistToChangeId(wishlist);
+    toggleUpdateListModalVisibility();
+    setModalVisibility(!modalVisibility);
   };
 
   const handleWishlistClick = async (wishlistId: number) => {
@@ -152,6 +175,36 @@ function Wishlist() {
       }
     } catch (error) {
       setError("Error fetching wishlist details");
+    }
+  };
+
+  const handleUpdateWishlist = async () => {
+    if (!updatedWishlistName.trim()) {
+      setError("Wishlist name cannot be empty");
+      return;
+    }
+
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = await fetch("http://localhost:8080/wishlist", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: parseInt(userId || "0"),
+          wishlistId: wishlistToChangeId,
+          newName: updatedWishlistName.trim(),
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update item quantity");
+      }
+      fetchWishlists();
+      fetchRecentWishlist();
+      toggleUpdateListModalVisibility();
+    } catch (error) {
+      console.error("Error updating item quantity:", error);
     }
   };
 
@@ -230,9 +283,7 @@ function Wishlist() {
               style={{ top: modalPosition.top, left: modalPosition.left }}
             >
               <button
-                onClick={() =>
-                  handleChangeTitle(selectedWishlist?.id ?? 0, "New Title")
-                }
+                onClick={() => handleChangeTitle(selectedWishlist?.id ?? 0)}
                 className={styles.modalOption}
               >
                 Change Title
@@ -292,6 +343,40 @@ function Wishlist() {
                 <button
                   className={styles.cancelButton}
                   onClick={() => toggleCreateListModalVisibility()}
+                >
+                  cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {updateListModalVisibility && (
+          <div
+            className={styles.modalBackground}
+            onClick={() => toggleUpdateListModalVisibility()}
+          >
+            <div
+              className={styles.newListModalContainer}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2>Change wishlist's name</h2>
+              <input
+                type="text"
+                placeholder="new wishlist name"
+                className={styles.inputBox}
+                value={updatedWishlistName}
+                onChange={(e) => setUpdatedWishlistName(e.target.value)}
+              />
+              <div className={styles.buttons}>
+                <button
+                  className={styles.saveButton}
+                  onClick={handleUpdateWishlist}
+                >
+                  save
+                </button>
+                <button
+                  className={styles.cancelButton}
+                  onClick={() => toggleUpdateListModalVisibility()}
                 >
                   cancel
                 </button>

@@ -1,0 +1,110 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    padding: 32px;
+    gap: 16px;
+    border-radius: 16px;
+    width: 75%;
+}
+.fullOrderInfoContainer {
+    display: flex;
+    justify-content: space-between;
+}
+.orderContent {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+  .item {
+    display: flex;
+    width: 100%;
+    padding: 0 16px;
+  }
+  .cover {
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 0;
+  }
+  .itemImage {
+    height: 160px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+  }
+  .infoContainer {
+    width: 60%;
+    padding: 16px;
+    background-color: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .quantityContainer {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: left;
+  }
+  .title,
+  .author,
+  .price {
+    display: flex;
+    justify-content: left;
+  }
+  .title {
+    font-weight: 600;
+  }
+  .author {
+    color: #898989;
+    font-size: 14px;
+  }
+
+  .deliveryPoint {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .trackDescription {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .pathSymbol {
+    color: #e3502e;
+  }
+.timestamp {
+    font-size: 12px;
+    color: #e2e2e2;
+}
+.pathDots {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 5px;
+    font-size: 12px;
+}
+.deliveryHistoryContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.deliveryFullInfoContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.orderContent,
+.deliveryHistoryContainer {
+    flex-grow: 1;
+    flex-basis: 0;
+    max-width: 45%; 
+}
+.deliveryInfoItem {
+    display: flex;
+    gap: 8px;
+    padding: 4px 0;
+}
+  

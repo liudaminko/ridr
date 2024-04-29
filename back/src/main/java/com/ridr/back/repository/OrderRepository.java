@@ -6,9 +6,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -59,4 +61,41 @@ public class OrderRepository {
 
         return order;
     }
+
+    public List<OrderDto> getUserOrders(int userId) {
+        String query = "SELECT id, date AS created_at FROM Order_ WHERE customer_id = ? ORDER BY date DESC, time DESC";
+        List<OrderDto> userOrders = new ArrayList<>();
+        jdbcTemplate1.query(query, new Object[]{userId}, (ResultSet rs) -> {
+            try {
+                int orderId = rs.getInt("id");
+                String createdAt = rs.getString("created_at");
+                userOrders.add(new OrderDto(orderId, createdAt));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+        return userOrders;
+    }
+
+    public List<BookOrder> getOrder(int orderId) {
+        String query = "SELECT DISTINCT bo.order_id, bo.book_id, bo.sequence_number, bo.quantity, b.image_url, b.title, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price " +
+                "FROM Book_Order bo " +
+                "JOIN Book b ON b.id = bo.book_id " +
+                "JOIN Book_Authors ba ON ba.book_id = b.id " +
+                "JOIN Author a ON a.id = ba.author_id " +
+                "WHERE bo.order_id = ?";
+
+        return jdbcTemplate1.query(query, new Object[]{orderId}, (resultSet, i) -> {
+            ShortInfoBook shortBookInfo = new ShortInfoBook();
+            shortBookInfo.setId(resultSet.getInt("book_id"));
+            shortBookInfo.setImageUrl(resultSet.getString("image_url"));
+            shortBookInfo.setTitle(resultSet.getString("title"));
+            shortBookInfo.setAuthors(resultSet.getString("authors"));
+            shortBookInfo.setPrice(resultSet.getInt("price"));
+
+            BookOrder bookOrder = new BookOrder(resultSet.getInt("order_id"), resultSet.getInt("book_id"), resultSet.getInt("sequence_number"), resultSet.getInt("quantity"), shortBookInfo);
+            return bookOrder;
+        });
+    }
+
 }

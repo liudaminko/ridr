@@ -2,6 +2,8 @@ package com.ridr.back.controller;
 
 import com.ridr.back.configuration.DBContextHolder;
 import com.ridr.back.model.Author;
+import com.ridr.back.model.EditAuthorDto;
+import com.ridr.back.model.FullInfoBook;
 import com.ridr.back.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +34,15 @@ public class AuthorController {
         return author;
     }
     @PutMapping
-    public Author editAuthor(@RequestBody Author request) {
-        Author author = repository.edit(request);
-        return author;
+    public int editAuthor(@RequestBody EditAuthorDto request) {
+        return repository.edit(request);
+    }
+    @DeleteMapping
+    public int deleteAuthor(@RequestParam String name) {
+        return repository.delete(name);
+    }
+    @GetMapping(params = "limit")
+    public List<Author> getAuthorsLimited(@RequestParam int limit) {
+        return repository.getAllWithLimit(limit);
     }
 }

@@ -37,7 +37,6 @@ public class WishlistController {
         if (name == null || userIdObj == null) {
             throw new IllegalArgumentException("Name and userId are required.");
         }
-
         int userId = userIdObj.intValue();
 
         return repository.createWishlist(name, userId);
@@ -49,7 +48,17 @@ public class WishlistController {
         Integer userId = (Integer) payload.get("userId");
         Integer bookId = (Integer) payload.get("bookId");
         return repository.addBookToWishlist(wishlistId, userId, bookId);
-
+    }
+    @PatchMapping
+    public int changeWishlistName(@RequestBody Map<String, Object> body) {
+        Integer wishlistId = (Integer) body.get("wishlistId");
+        Integer userId = (Integer) body.get("userId");
+        String newName = (String) body.get("newName");
+        return repository.updateWishlistName(wishlistId, userId, newName);
+    }
+    @DeleteMapping
+    public int deleteWishlist(@RequestParam int userId, @RequestParam int wishlistId) {
+        return repository.delete(userId, wishlistId);
     }
 
 }

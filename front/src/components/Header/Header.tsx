@@ -53,7 +53,7 @@ function Header() {
     if (option === "Settings") {
       navigation("/cabinet");
     } else if (option === "Orders") {
-      navigation("/order");
+      navigation("/orders");
     } else {
       localStorage.removeItem("userId");
       setUserId(null);
@@ -74,21 +74,24 @@ function Header() {
         <p className={styles.schedule}>without weekends, 9 a.m. - 8 p.m.</p>
       </div>
       <div className={styles.userCompound}>
-        <div className={styles.compound}>
-          <Link to="/wishlist">
-            <img src="/like.png" style={{ height: "24px" }} alt="wishlist" />
-          </Link>
-          <div className={styles.cartContainer} onClick={toggleCart}>
-            <img
-              src="/shopping-cart.png"
-              style={{ height: "24px", cursor: "pointer" }}
-              alt="cart"
-            />
-            {cartItemsCount > 0 && (
-              <div className={styles.cartCount}>{cartItemsCount}</div>
-            )}
+        {userId && (
+          <div className={styles.compound}>
+            <Link to="/wishlist">
+              <img src="/like.png" style={{ height: "24px" }} alt="wishlist" />
+            </Link>
+            <div className={styles.cartContainer} onClick={toggleCart}>
+              <img
+                src="/shopping-cart.png"
+                style={{ height: "24px", cursor: "pointer" }}
+                alt="cart"
+              />
+              {cartItemsCount > 0 && (
+                <div className={styles.cartCount}>{cartItemsCount}</div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
+
         {userId ? (
           <img
             src="/user.png"

@@ -20,3 +20,19 @@
     border-radius: 32px;
     gap: 16px;
 }
+.windowsChanger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+}
+.action {
+    color: #e3502e;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #e2e2e2;
+    font-weight: bold;
+}
+.selected {
+    border-bottom: 2px solid #e3502e;
+}

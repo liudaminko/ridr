@@ -1,0 +1,25 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.dashboardContainer {
+    width: 100%;
+}
+.navigationButtons {
+    display: flex;
+    gap: 16px;
+}
+.action {
+    color: #e3502e;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #e2e2e2;
+}
+.selected {
+    border-bottom: 1px solid #e3502e;
+
+}

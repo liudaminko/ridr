@@ -1,8 +1,6 @@
 package com.ridr.back.repository;
 
-import com.ridr.back.model.Author;
-import com.ridr.back.model.FullInfoBook;
-import com.ridr.back.model.Genre;
+import com.ridr.back.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,9 +30,22 @@ public class AuthorRepository {
         return jdbcTemplate2.update(query, request.getFirstName(), request.getLastName(), request.getBiography(), LocalDateTime.now());
     }
 
-    public Author edit(Author request) {
-        String query = "UPDATE Author SET first_name = ?, last_name = ?, biography = ?, last_edited_at = ? " +
-                "WHERE id = ?";
-        return jdbcTemplate2.queryForObject(query, new Object[]{request.getFirstName(), request.getLastName(), request.getBiography(), LocalDateTime.now(), request.getId()}, new BeanPropertyRowMapper<>(Author.class));
+    public int edit(EditAuthorDto editAuthorDto) {
+        String query = "UPDATE Author SET first_name = ?, last_name = ?, biography = ?, last_edited_at = ? WHERE CONCAT(first_name, ' ', last_name) = ?";
+        return jdbcTemplate2.update(query, editAuthorDto.getFirstName(), editAuthorDto.getLastName(),editAuthorDto.getBiography(), LocalDateTime.now(), editAuthorDto.getOldName());
+    }
+
+    public int delete(String name) {
+        String query = "UPDATE Author SET is_active = 0 WHERE CONCAT(first_name, ' ', last_name) = ?";
+        return jdbcTemplate2.update(query, name);
+    }
+
+    public List<Author> getAllWithLimit(int limit) {
+        String query = "SELECT ";
+        if (limit > 0) {
+            query += "TOP " + limit + " ";
+        }
+        query += "* FROM Author";
+        return jdbcTemplate2.query(query, BeanPropertyRowMapper.newInstance(Author.class));
     }
 }

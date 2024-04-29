@@ -1,4 +1,19 @@
 .container {
-    height: 420px;
+    max-height: 420px;
     overflow-y: auto;
+    width: auto;
+    display: flex;
+    justify-content: center;
+}
+table {
+    border-collapse: collapse;
+}
+td {
+    border: 1px solid #2b2b2b;
+    padding: 0 8px;
+    text-align: left;
+}
+th {
+    background-color: #a4ae9d;
+    border: 2px solid #2b2b2b;
 }

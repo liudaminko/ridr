@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./CatalogSidebar.module.css";
+import { useLocation } from "react-router-dom";
 
 export interface FilterItem {
   id: number;
@@ -24,6 +25,13 @@ function CatalogSidebar({
 }: CatalogSidebarProps) {
   const [filters, setFilters] = useState<Filters>();
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const publisherParam = queryParams.get("publisher");
+  const genreParam = queryParams.get("genre");
+  const authorParam = queryParams.get("author");
+  const languageParam = queryParams.get("language");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,7 +41,6 @@ function CatalogSidebar({
         const dataPublisher = await responsePublisher.json();
         const responseLanguage = await fetch("http://localhost:8080/language");
         const dataLanguage = await responseLanguage.json();
-        console.log(dataLanguage);
         const responseGenre = await fetch("http://localhost:8080/genre");
         const dataGenre = await responseGenre.json();
         const responseAuthor = await fetch("http://localhost:8080/author");
@@ -59,6 +66,38 @@ function CatalogSidebar({
           language: mappedLanguages,
           genre: dataGenre,
         });
+
+        const initialSelectedFilters: Filters = {
+          publisher: [],
+          author: [],
+          language: [],
+          genre: [],
+        };
+
+        for (const [key, value] of queryParams.entries()) {
+          const filterType = key.replace(/\[\]$/, "");
+          console.log("Filter type:", filterType, "Filter value:", value);
+          console.log("Filters:", filters);
+          if (filters && filters[filterType as keyof Filters]) {
+            console.log("HERE");
+            const filterId = parseInt(value);
+            const filterItem = filters[filterType as keyof Filters].find(
+              (item: FilterItem) => item.id === filterId
+            );
+            if (filterItem) {
+              initialSelectedFilters[filterType as keyof Filters].push(
+                filterItem
+              );
+              console.log("Filter item added:", filterItem);
+            } else {
+              console.log("No filter item found for ID:", filterId);
+            }
+          }
+        }
+
+        console.log("Initial selected filters:", initialSelectedFilters);
+        setSelectedFilters(initialSelectedFilters);
+        applyFilters();
       } catch (error) {
         console.error("Error fetching filter data:", error);
       }
@@ -67,7 +106,7 @@ function CatalogSidebar({
     fetchData();
   }, []);
 
-  const [selectedFilters, setSelectedFilters] = useState({
+  const [selectedFilters, setSelectedFilters] = useState<Filters>({
     publisher: [],
     author: [],
     language: [],

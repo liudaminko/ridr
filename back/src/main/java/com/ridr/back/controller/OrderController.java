@@ -1,8 +1,6 @@
 package com.ridr.back.controller;
 
-import com.ridr.back.model.FullOrderInfo;
-import com.ridr.back.model.Order;
-import com.ridr.back.model.ShoppingCart;
+import com.ridr.back.model.*;
 import com.ridr.back.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +19,15 @@ public class OrderController {
     @PostMapping
     public Order createOrder(@RequestBody FullOrderInfo request) {
         return repository.create(request.getOrder().getCustomerId(), request.getDelivery(), request.getDeliveryAddress(), request.getCartItems());
+    }
+    @GetMapping
+    public List<OrderDto> getUsersOrders(@RequestParam int userId) {
+        return repository.getUserOrders(userId);
+    }
+
+    @GetMapping("/full")
+    public List<BookOrder> getOrderBooks(@RequestParam int orderId) {
+        return repository.getOrder(orderId);
     }
 
 }

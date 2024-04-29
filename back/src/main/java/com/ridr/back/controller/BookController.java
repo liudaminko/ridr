@@ -1,6 +1,7 @@
 package com.ridr.back.controller;
 
 import com.ridr.back.model.FullInfoBook;
+import com.ridr.back.model.Publisher;
 import com.ridr.back.model.ShortInfoBook;
 import com.ridr.back.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/catalog")
+@RequestMapping("/book")
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:3000", "http://ridr.s3-website.eu-north-1.amazonaws.com/"})
 public class BookController {
@@ -21,8 +22,8 @@ public class BookController {
         return repository.getBooks(limit, offset);
     }
     @GetMapping("/authorized")
-    public List<ShortInfoBook> getBooksAuthorized(@RequestParam(defaultValue = "20") int limit, @RequestParam(defaultValue = "0") int offset, int userId) {
-        return repository.getBooksAuthorized(limit, offset, userId);
+    public List<ShortInfoBook> getBooksAuthorized(@RequestParam(defaultValue = "20") int limit, @RequestParam(defaultValue = "0") int offset, int userId, @RequestParam(defaultValue = "-1") int genre,  @RequestParam(defaultValue = "-1") int publisher,  @RequestParam(defaultValue = "-1") int author,  @RequestParam(defaultValue = "-1") String language) {
+        return repository.getBooksAuthorized(limit, offset, userId, genre, publisher, author, language);
     }
 
     @GetMapping("/fullinfo")
@@ -39,11 +40,32 @@ public class BookController {
     public ShortInfoBook getShortInfoBookAuthorized(@RequestParam int userId, int bookId) {
         return repository.getShortInfoBookAuthorized(userId, bookId);
     }
+    @GetMapping("/new")
+    public List<ShortInfoBook> getNewBooks(@RequestParam int userId) {
+        return repository.getNewBooksLastMonth(userId);
+    }
     @GetMapping("/popularmonth")
     public List<ShortInfoBook> getPopularBooksDuringLastMonth(@RequestParam int userId) {
         return repository.getMostPopularBooksInLastMonth(userId);
     }
+    @GetMapping(params = "limit")
+    public List<FullInfoBook> getBooksLimited(@RequestParam int limit) {
+        return repository.getAllWithLimit(limit);
+    }
+    @GetMapping("/kids")
+    public List<ShortInfoBook> getKidsBooks() {
+        return repository.getBooksForKids();
+    }
 
+    @PostMapping
+    public FullInfoBook createBook(@RequestBody FullInfoBook request) {
+        return repository.create(request);
+    }
+
+    @DeleteMapping
+    public int deleteBook(@RequestParam String isbn) {
+        return repository.delete(isbn);
+    }
 
 //    @PostMapping("/like")
 //    public ShortInfoBook AddToWishlist(@RequestBody Map<String, Object> payload) {

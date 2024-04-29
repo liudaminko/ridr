@@ -19,25 +19,29 @@ function LogInPopup() {
   const [passwordError, setPasswordError] = useState("");
 
   const handleSubmitClick = async () => {
+    console.log("LOG IN");
     setPhoneError("");
     setEmailError("");
     setPasswordError("");
 
-    if ("" === phone) {
+    if (logInMethod == "phone" && "" === phone) {
       setPhoneError("Please enter your phone");
       return;
     }
-    if (!/^\+?\d{10,}$/.test(phone)) {
+    if (logInMethod == "phone" && !/^\+?\d{10,}$/.test(phone)) {
       setPhoneError("Please enter a valid phone number (start with '+' sign)");
       return;
     }
 
-    if ("" === email) {
+    if (logInMethod == "email" && "" === email) {
       setEmailError("Please enter your email");
       return;
     }
 
-    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+    if (
+      logInMethod == "email" &&
+      !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)
+    ) {
       setEmailError("Please enter a valid email");
       return;
     }
@@ -53,6 +57,7 @@ function LogInPopup() {
     }
 
     try {
+      console.log("http://localhost:8080/user/login/", logInMethod);
       const response = await fetch(
         `http://localhost:8080/user/login/${logInMethod}`,
         {
@@ -62,7 +67,7 @@ function LogInPopup() {
           },
           body: JSON.stringify({
             email: logInMethod === "email" ? email : "",
-            phone: logInMethod === "phone" ? phone : "",
+            phoneNumber: logInMethod === "phone" ? phone : "",
             password,
           }),
         }

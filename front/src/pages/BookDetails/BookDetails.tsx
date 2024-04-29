@@ -44,7 +44,7 @@ function BookDetails() {
     const fetchBookDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/catalog/fullinfo?bookId=${id}`
+          `http://localhost:8080/book/fullinfo?bookId=${id}`
         );
         console.log(id);
         if (response.ok) {

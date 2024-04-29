@@ -18,6 +18,7 @@ import ScrollToTop from "./ScrollToTop";
 import Delivery from "./pages/Delivery/Delivery";
 import Order from "./pages/Order/Order";
 import Admin from "./pages/Admin/Admin";
+import OrdersHistory from "./pages/OrdersHistory/OrdersHistory";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/delivery" element={<Delivery />} />
               <Route path="/order" element={<Order />} />
+              <Route path="/orders" element={<OrdersHistory />} />
               <Route path="/admin" element={<Admin />} />
             </Routes>
           </div>
