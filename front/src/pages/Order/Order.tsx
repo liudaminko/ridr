@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import styles from "./Order.module.css";
+import ErrorModal from "../../components/ErrorModal/ErrorModal";
+import { useModal } from "../../ModalContext";
+import { useNavigate } from "react-router-dom";
 
 interface CartItem {
   customerId: number;
@@ -37,6 +40,10 @@ interface User {
 function Order() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [customer, setCustomer] = useState<User>();
+  const navigate = useNavigate();
+
+  const { toggleErrorPopup, setErrorPopupText } = useModal();
+
   const [deliveryServices, setDeliveryServices] = useState<DeliveryService[]>(
     []
   );
@@ -251,6 +258,9 @@ function Order() {
       }
 
       const data = await response.json();
+      setErrorPopupText("created order successfully");
+      toggleErrorPopup();
+      navigate("/");
       console.log("Order created successfully with ID:", data.id);
       console.log("cleared shopping cart");
     } catch (error) {
@@ -595,7 +605,7 @@ function Order() {
                   </div>
 
                   {showSelect && cityRegionInputValue != "" && (
-                    <div className={styles.cityOptions}>
+                    <div className={styles.cityOptions} style={{ zIndex: 12 }}>
                       {cities.map((city) => (
                         <p
                           key={city.Ref}
@@ -725,6 +735,7 @@ function Order() {
           </button>
         </div>
       </div>
+      <ErrorModal />
     </div>
   );
 }

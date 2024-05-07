@@ -50,10 +50,10 @@ function Catalog() {
   }));
 
   const [selectedFilters, setSelectedFilters] = useState<Filters>({
-    publisher: publisherFilters,
-    genre: genreFilters,
-    author: authorFilters,
-    language: languageFilters,
+    publisher: [],
+    genre: [],
+    author: [],
+    language: [],
   });
 
   const [books, setBooks] = useState<Book[]>([]);
@@ -70,24 +70,24 @@ function Catalog() {
   );
 
   useEffect(() => {
+    fetchBooksCount();
     setTotalPages(Math.ceil(booksTotal / booksToShow));
     fetchBooks();
-    fetchBooksCount();
+    console.log("books count", booksTotal);
+
+    console.log("pages", totalPages);
   }, [booksToShow, selectedFilters]);
 
   const buildFiltersUrl = (filters: Filters, baseUrl: string): string => {
     const queryParams = new URLSearchParams();
 
     Object.entries(filters).forEach(([filterType, filterItems]) => {
-      // Check if the filter items exist and are not empty
       if (filterItems && filterItems.length > 0) {
-        // Handle multiple values for the same filter type
         if (filterItems.length > 1) {
           const filterValues = filterItems
             .map((item) => {
-              // Check if the filterType is "language"
               if (filterType === "language") {
-                return `'${item.id}'`; // Enclose language value in single quotes
+                return `'${item.id}'`;
               }
               return item.id;
             })
@@ -119,12 +119,14 @@ function Catalog() {
 
       if (userId) {
         url += `/authorized`;
+      } else {
+        url += "/nonauthorized";
       }
 
       const anyFiltersSelected = Object.values(selectedFilters).some(
         (filterArray) => filterArray.length > 0
       );
-      console.log("filters selected ", anyFiltersSelected);
+      console.log("Any filters selected:", anyFiltersSelected);
 
       if (anyFiltersSelected) {
         const filtersUrl = buildFiltersUrl(selectedFilters, baseUrl);
@@ -139,7 +141,6 @@ function Catalog() {
       if (response.ok) {
         const data = await response.json();
         setBooks(data);
-        setBooksTotal(books.length);
         console.log(data);
       } else {
         console.error("Failed to fetch books:", response.statusText);
@@ -169,22 +170,19 @@ function Catalog() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    fetchBooks(); // Call fetchBooks to fetch books for the new page
+    fetchBooks();
   };
 
   const paginationButtons = [];
-  const maxButtonsToShow = 6; // Maximum number of buttons to show
+  const maxButtonsToShow = 6;
 
-  // Calculate the start and end page numbers based on the current page
   let startPage = Math.max(1, currentPage - Math.floor(maxButtonsToShow / 2));
   let endPage = Math.min(totalPages, startPage + maxButtonsToShow - 1);
 
-  // Adjust the start and end page numbers if the range is less than maxButtonsToShow
   if (endPage - startPage + 1 < maxButtonsToShow) {
     startPage = Math.max(1, endPage - maxButtonsToShow + 1);
   }
 
-  // Generate pagination buttons for the calculated range
   for (let i = startPage; i <= endPage; i++) {
     paginationButtons.push(
       <button
@@ -210,7 +208,6 @@ function Catalog() {
     );
     console.log("FILTERS CHANGED");
 
-    // Update the URL
     navigate({ search: queryParams.toString() });
 
     console.log(filters);

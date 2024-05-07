@@ -84,22 +84,47 @@ public class BookController {
             genres = new ArrayList<>();
         }
 
-        // Check if languages is null, if so, initialize it as an empty list
         if (languages == null) {
             languages = new ArrayList<>();
         }
 
-        // Check if publishers is null, if so, initialize it as an empty list
         if (publishers == null) {
             publishers = new ArrayList<>();
         }
 
-        // Check if authors is null, if so, initialize it as an empty list
         if (authors == null) {
             authors = new ArrayList<>();
         }
 
         return repository.findAllBooksByFilters(genres, languages, publishers, authors, limit, offset, userId);
+    }
+    @GetMapping("/nonauthorized/filters")
+    public List<ShortInfoBook> getBooksNonAuthorized(
+            @RequestParam(required = false, name = "genre") List<Long> genres,
+            @RequestParam(required = false, name = "language") List<String> languages,
+            @RequestParam(required = false, name = "publisher") List<Long> publishers,
+            @RequestParam(required = false, name = "author") List<Long> authors,
+            @RequestParam(required = true, name = "limit") int limit,
+            @RequestParam(required = true, name = "offset") int offset
+    ) {
+
+        if (genres == null) {
+            genres = new ArrayList<>();
+        }
+
+        if (languages == null) {
+            languages = new ArrayList<>();
+        }
+
+        if (publishers == null) {
+            publishers = new ArrayList<>();
+        }
+
+        if (authors == null) {
+            authors = new ArrayList<>();
+        }
+
+        return repository.findAllBooksByFiltersNonAuthorized(genres, languages, publishers, authors, limit, offset);
     }
 
     @PostMapping
@@ -107,6 +132,10 @@ public class BookController {
         return repository.create(request);
     }
 
+    @GetMapping("/identify")
+    public Map<Integer, String> getBook(@RequestParam String isbn) {
+        return repository.getBookByISBN(isbn);
+    }
     @DeleteMapping
     public int deleteBook(@RequestParam String isbn) {
         return repository.delete(isbn);

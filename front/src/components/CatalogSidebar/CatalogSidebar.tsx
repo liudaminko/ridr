@@ -27,10 +27,12 @@ function CatalogSidebar({
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const publisherParam = queryParams.get("publisher");
-  const genreParam = queryParams.get("genre");
-  const authorParam = queryParams.get("author");
-  const languageParam = queryParams.get("language");
+
+  // Convert filter values to FilterItem arrays
+  const [publisherFilters, setPublisherFilters] = useState<FilterItem[]>([]);
+  const [genreFilters, setGenreFilters] = useState<FilterItem[]>([]);
+  const [authorFilters, setAuthorFilters] = useState<FilterItem[]>([]);
+  const [languageFilters, setLanguageFilters] = useState<FilterItem[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,32 +69,18 @@ function CatalogSidebar({
           genre: dataGenre,
         });
 
+        /*
         const initialSelectedFilters: Filters = {
-          publisher: [],
-          author: [],
-          language: [],
-          genre: [],
+          publisher: publisherFilters,
+          genre: genreFilters,
+          author: authorFilters,
+          language: languageFilters,
         };
 
-        for (const [key, value] of queryParams.entries()) {
-          const filterType = key.replace(/\[\]$/, "");
-          if (filters && filters[filterType as keyof Filters]) {
-            const filterId = parseInt(value);
-            const filterItem = filters[filterType as keyof Filters].find(
-              (item: FilterItem) => item.id === filterId
-            );
-            if (filterItem) {
-              initialSelectedFilters[filterType as keyof Filters].push(
-                filterItem
-              );
-            } else {
-              console.log("No filter item found for ID:", filterId);
-            }
-          }
-        }
-
         setSelectedFilters(initialSelectedFilters);
-        applyFilters();
+        console.log("SIDEBAR SELECTED FILTERS", selectedFilters);
+        */
+        //applyFilters();
       } catch (error) {
         console.error("Error fetching filter data:", error);
       }
@@ -101,11 +89,53 @@ function CatalogSidebar({
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const publisherParam = queryParams.getAll("publisher");
+    const genreParam = queryParams.getAll("genre");
+    const authorParam = queryParams.getAll("author");
+    const languageParam = queryParams.getAll("language");
+
+    const parsedPublisherFilters: FilterItem[] = publisherParam.map((id) => ({
+      id: parseInt(id),
+      name: "publisher",
+    }));
+    const parsedGenreFilters: FilterItem[] = genreParam.map((id) => ({
+      id: parseInt(id),
+      name: "genre",
+    }));
+    const parsedAuthorFilters: FilterItem[] = authorParam.map((id) => ({
+      id: parseInt(id),
+      name: "author",
+    }));
+    const parsedLanguageFilters: FilterItem[] = languageParam.map((id) => ({
+      id: parseInt(id),
+      name: "language",
+    }));
+
+    setPublisherFilters(parsedPublisherFilters);
+    setGenreFilters(parsedGenreFilters);
+    setAuthorFilters(parsedAuthorFilters);
+    setLanguageFilters(parsedLanguageFilters);
+    console.log("publisher sidebar", publisherFilters);
+    console.log("genre sidebar", genreFilters);
+    console.log("author sidebar", authorFilters);
+    console.log("lang sidebar", languageFilters);
+  }, [location.search]);
+
+  useEffect(() => {
+    setSelectedFilters({
+      publisher: publisherFilters,
+      genre: genreFilters,
+      author: authorFilters,
+      language: languageFilters,
+    });
+  }, [publisherFilters, genreFilters, authorFilters, languageFilters]);
+
   const [selectedFilters, setSelectedFilters] = useState<Filters>({
-    publisher: [],
-    author: [],
-    language: [],
-    genre: [],
+    publisher: publisherFilters,
+    genre: genreFilters,
+    author: authorFilters,
+    language: languageFilters,
   });
 
   const handleFilterChange = (

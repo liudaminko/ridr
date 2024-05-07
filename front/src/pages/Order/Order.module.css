@@ -305,6 +305,7 @@ input[type="radio"]:checked::before {
   background-color: #e3502e;
   border-radius: 32px;
   width: max-content;
+  cursor: pointer;
 }
 .citySelect {
   position: relative;

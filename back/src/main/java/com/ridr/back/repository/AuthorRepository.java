@@ -48,4 +48,9 @@ public class AuthorRepository {
         query += "* FROM Author";
         return jdbcTemplate2.query(query, BeanPropertyRowMapper.newInstance(Author.class));
     }
+
+    public List<Author> findAuthorsThatMatchPattern(String fullName) {
+        String query = "SELECT id, first_name, last_name FROM Author WHERE CONCAT(first_name, ' ', last_name) LIKE '" + fullName + "%'";
+        return jdbcTemplate2.query(query, BeanPropertyRowMapper.newInstance(Author.class));
+    }
 }

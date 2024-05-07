@@ -5,7 +5,7 @@ function Dashboard1() {
   const [viz, setViz] = useState(null);
   const ref = useRef(null);
   const dashboard1Url =
-    "https://public.tableau.com/views/Dashboard1_17143423886790/Dashboard1?:language=en-GB&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
+    "https://public.tableau.com/views/Customer_17146354228330/Customersportrait?:language=en-GB&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
 
   const initViz = () => {
     if (window.tableau && ref.current) {

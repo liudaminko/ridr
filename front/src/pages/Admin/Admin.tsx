@@ -4,6 +4,8 @@ import EntityEditor from "../../components/EntityEditor/EntityEditor";
 import BookEntityEditor from "../../components/EntityEditor/BookEntityEditor";
 import Dashboards from "../../components/Dashboards/Dashboards";
 import AdminLogIn from "./AdminLogIn";
+import OLAPManaging from "../../components/OLAPManaging/OLAPManaging";
+import BookAuthorsEntityEditor from "../../components/EntityEditor/BookAuthorsEntityEditor";
 
 function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -105,12 +107,12 @@ function Admin() {
         handleFieldChange("book", id, value),
     },
     {
-      id: "publisher", // ID for publisher field
+      id: "publisher",
       name: "publisher",
       label: "Publisher",
-      type: "select", // Change type to "select" for select input
-      value: "", // Initial value
-      options: [], // Options for publisher select, will be populated later
+      type: "select",
+      value: "",
+      options: [],
       onChange: (id: string, value: string) =>
         handleFieldChange("book", id, value),
     },
@@ -177,15 +179,17 @@ function Admin() {
       label: "Author's full name",
       type: "text",
       value: "",
+      options: [],
       onChange: (id: string, value: string) =>
         handleFieldChange("bookauthors", id, value),
     },
     {
       id: "book",
       name: "book",
-      label: "Book's title",
+      label: "Book's isbn",
       type: "text",
       value: "",
+      options: [],
       onChange: (id: string, value: string) =>
         handleFieldChange("bookauthors", id, value),
     },
@@ -303,9 +307,9 @@ function Admin() {
   ]);
   const [bookAuthorsDeleteField, setBookAuthorsDeleteField] = useState([
     {
-      id: "bookISBN",
-      name: "boonIsbn",
-      label: "Book's ISBN",
+      id: "book",
+      name: "book",
+      label: "Book's isbn",
       type: "text",
       value: "",
       onChange: (id: string, value: string) =>
@@ -426,6 +430,14 @@ function Admin() {
             >
               Dashboards
             </button>
+            <button
+              onClick={() => setSelectedWindow("olap")}
+              className={`${styles.action} ${
+                selectedWindow === "olap" ? styles.selected : ""
+              }`}
+            >
+              OLAP
+            </button>
           </div>
           {selectedWindow === "entity" ? (
             <div className={styles.entitiesContainer}>
@@ -459,17 +471,17 @@ function Admin() {
                 filters={bookFilterNames}
                 deleteField={bookDeleteField}
               />
-              <EntityEditor
+              <BookAuthorsEntityEditor
                 title="Book's Authors"
                 fields={bookAuthorsFields}
                 filters={bookAuthorsFilterNames}
                 deleteField={bookAuthorsDeleteField}
-                handleEditInputChange={handleEditInputChange}
-                setFields={setBookAuthorsFields}
               />
             </div>
-          ) : (
+          ) : selectedWindow === "dash" ? (
             <Dashboards />
+          ) : (
+            <OLAPManaging />
           )}
         </div>
       )}

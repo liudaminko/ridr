@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+.property {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+}
+.checkboxContainer {
+    position: relative;
+    left: 30px;
+}
+.checkboxLabelContainer {
+    padding: 4px;
+}
+.checkboxLabel {
+    display: flex;
+    gap: 8px;
+}

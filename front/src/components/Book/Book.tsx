@@ -51,13 +51,19 @@ function Book({
       return;
     }
     event.stopPropagation();
-    event.preventDefault();
   };
 
   const handleAddToCart = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
+    if (userId === null) {
+      setErrorPopupText(
+        "please log in/sign up to add book to your shopping cart"
+      );
+      toggleErrorPopup();
+      return;
+    }
 
     try {
       const response = await fetch("http://localhost:8080/cart", {

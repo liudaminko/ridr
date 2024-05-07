@@ -10,7 +10,33 @@ const AdminLogIn = ({ onLogin }: AdminLogInProps) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   const handleLogin = async () => {
+    setEmailError("");
+    setPasswordError("");
+
+    if ("" === email) {
+      setEmailError("Please enter your email");
+      return;
+    }
+
+    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      setEmailError("Please enter a valid email");
+      return;
+    }
+
+    if ("" === password) {
+      setPasswordError("Please enter a password");
+      return;
+    }
+
+    if (password.length < 7) {
+      setPasswordError("The password must be 8 characters or longer");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:8080/admin/login", {
         method: "POST",
@@ -30,6 +56,10 @@ const AdminLogIn = ({ onLogin }: AdminLogInProps) => {
       console.error("Error logging in:", error);
       setError("An error occurred while logging in");
     }
+  };
+
+  const isButtonDisabled = () => {
+    return !email || !password;
   };
 
   return (
@@ -52,7 +82,11 @@ const AdminLogIn = ({ onLogin }: AdminLogInProps) => {
         />
       </div>
 
-      <button onClick={handleLogin} className={styles.submitButton}>
+      <button
+        onClick={handleLogin}
+        className={styles.submitButton}
+        disabled={isButtonDisabled()}
+      >
         Login
       </button>
       {error && <p>{error}</p>}

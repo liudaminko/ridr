@@ -1,0 +1,1131 @@
+﻿import csv
+import json
+
+
+import pyodbc
+
+
+csv_file_path = 'D:/uni/db/goodreads_data.csv'
+
+
+# Create the connection string
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+
+
+conn = pyodbc.connect(conn_str)
+
+
+cursor = conn.cursor()
+
+
+all_genres = []
+all_genres_strings = []
+
+
+# Read genres from the CSV file
+with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
+   reader = csv.reader(csvfile)
+   next(reader)  # Skip header row if exists
+   all_genres_strings += [row[4] for row in reader]
+
+
+unique_genres = list(set([item for sublist in [eval(s) for s in all_genres_strings] for item in sublist]))
+
+
+# Insert unique genres into the Genre table
+for genre in unique_genres:
+   cursor.execute(f"INSERT INTO Genre (name) VALUES (?)", genre)
+
+
+conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+import csv
+import json
+
+
+import pyodbc
+
+
+csv_file_path = 'D:/uni/db/goodreads_data.csv'
+
+
+# Create the connection string
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+
+
+conn = pyodbc.connect(conn_str)
+
+
+cursor = conn.cursor()
+
+
+all_book_names = []
+
+
+with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
+   reader = csv.DictReader(csvfile)
+   for row in reader:
+       title = row['Book']
+       description = row['Description']
+       cursor.execute("SELECT MAX(id) FROM Book")
+       max_id = cursor.fetchone()[0]
+       new_id = max_id + 1 if max_id is not None else 1
+       cursor.execute("INSERT INTO Book (id, title, description) VALUES (?, ?, ?)", (new_id, title, description))
+
+
+
+
+conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+
+
+import csv
+import json
+import pyodbc
+
+
+csv_file_path = 'D:/uni/db/Books_Data.csv'
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+
+
+conn = pyodbc.connect(conn_str)
+
+
+cursor = conn.cursor()
+
+
+language_mapping = {
+   'eng': 'eng',  # English
+   'ara': 'ara',  # Arabic
+   'en-GB': 'eng',  # English (Great Britain)
+   'spa': 'spa',  # Spanish
+   'nl': 'dut',  # Dutch
+   'en-CA': 'eng',  # English (Canada)
+   'en-US': 'eng',  # English (United States)
+   'fre': 'fre'  # French
+}
+
+
+with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
+   reader = csv.DictReader(csvfile)
+   for row in reader:
+       title = row['Book Name']
+       price = int(float(row['sale price']))
+       publishing_year = row['Publishing Year']
+       language_code = language_mapping.get(row['language_code'], row['language_code'])
+       cursor.execute("UPDATE Book SET price = ?, publishing_year = ?, language = ? WHERE title = ?", (price, publishing_year, language_code, title))
+
+
+conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+
+
+import csv
+import json
+import pyodbc
+import pandas as pd
+
+
+
+
+def read_csv(filename):
+   data = []
+   with open(filename, 'r') as file:
+       csv_reader = csv.reader(file, delimiter=',')
+       for row in csv_reader:
+           # Remove double quotes from each value
+           row = [value.strip('"') for value in row]
+           data.append(row)
+   return data
+
+
+
+
+data = read_csv('D:/uni/db/Book_new1.csv')
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+conn = pyodbc.connect(conn_str)
+
+
+cursor = conn.cursor()
+
+
+for i, row in enumerate(data):
+   if i == 0: continue
+   try:
+       isbn = row[0]
+       year_of_publication = row[3]
+       image_url = row[7]
+       title = row[1]
+
+
+       # Update the Book table with ISBN, Year-Of-Publication, and Image-URL-L where title = Book-Title
+       cursor.execute("UPDATE Book SET isbn = ?, publishing_year = ?, image_url = ? WHERE title = ?",
+                      isbn, year_of_publication, image_url, title)
+   except Exception as e:
+       # Handle Unicode decoding errors here (if needed)
+       print("UnicodeDecodeError occurred. Skipping row.")
+
+
+conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+import random
+import pyodbc
+
+
+# Database connection details
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+# Establish a connection to the database
+conn = pyodbc.connect(conn_str)
+
+
+# Create a cursor object to execute SQL queries
+cursor = conn.cursor()
+
+
+# Query the database to get the list of books
+cursor.execute("SELECT title FROM Book")
+books = cursor.fetchall()
+
+
+try:
+   # Iterate over each book
+   for book in books:
+       title = book[0]
+
+
+       # Generate a random number of pages between 60 and 897 for each book
+       num_pages = random.randint(60, 897)
+
+
+       # Update the number of pages for the current book in the database
+       cursor.execute("UPDATE Book SET pages = ? WHERE title = ?", (num_pages, title))
+
+
+   # Commit the transaction
+   conn.commit()
+
+
+   print("Number of pages updated successfully for all books.")
+except Exception as e:
+   # Handle any exceptions
+   print("Error updating number of pages:", e)
+
+
+# Close the cursor and connection
+cursor.close()
+conn.close()
+
+
+import random
+import pyodbc
+
+
+# Database connection details
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+# Establish a connection to the database
+conn = pyodbc.connect(conn_str)
+
+
+cursor = conn.cursor()
+
+
+cursor.execute("SELECT title FROM Book")
+books = cursor.fetchall()
+
+
+try:
+   for book in books:
+       title = book[0]
+
+
+       price = random.randint(1, 24)
+
+
+       cursor.execute("UPDATE Book SET price = ? WHERE title = ? AND price IS NULL", (price, title))
+
+
+   conn.commit()
+
+
+except Exception as e:
+   # Handle any exceptions
+   print("Error updating number of pages:", e)
+
+
+# Close the cursor and connection
+cursor.close()
+conn.close()
+
+
+import csv
+import pyodbc
+
+
+def read_csv(filename):
+   data = []
+   with open(filename, 'r', encoding='utf-8') as file:
+       csv_reader = csv.reader(file, delimiter=',')
+       for row in csv_reader:
+           row = [value.strip('"') for value in row]
+           data.append(row)
+   return data
+
+
+def get_existing_publishers(cursor):
+   publishers = set()
+   cursor.execute("SELECT name FROM Publisher")
+   for row in cursor.fetchall():
+       publishers.add(row[0])
+   return publishers
+
+
+data = read_csv('D:/uni/db/Book_new1.csv')
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+conn = pyodbc.connect(conn_str)
+cursor = conn.cursor()
+
+
+existing_publishers = get_existing_publishers(cursor)
+
+
+for i, row in enumerate(data):
+   if i == 0:
+       continue
+   try:
+       publisher = row[4]
+       if publisher not in existing_publishers:
+           cursor.execute("INSERT INTO Publisher (name) VALUES (?)", publisher)
+           existing_publishers.add(publisher)
+   except Exception as e:
+       # Handle any exceptions
+       print(f"Error occurred: {e}. Skipping row.")
+
+
+conn.commit()
+cursor.close()
+conn.close()
+
+
+import csv
+import pyodbc
+
+
+def read_csv(filename):
+   data = []
+   with open(filename, 'r') as file:
+       csv_reader = csv.reader(file, delimiter=',')
+       for row in csv_reader:
+           # Remove double quotes from each value
+           row = [value.strip('"') for value in row]
+           data.append(row)
+   return data
+
+
+def get_existing_titles(cursor):
+   cursor.execute("SELECT title FROM Book")
+   rows = cursor.fetchall()
+   return [row[0] for row in rows]
+
+
+data = read_csv('D:/uni/db/Book_new1.csv')
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+conn = pyodbc.connect(conn_str)
+cursor = conn.cursor()
+
+
+existing_titles = get_existing_titles(cursor)
+
+
+filtered_data = [row for row in data if row[1] in existing_titles]
+
+
+publisher_names = set(row[4] for row in filtered_data)
+
+
+for name in publisher_names:
+   cursor.execute("INSERT INTO Publisher (name) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM Publisher WHERE name = ?)", name, name)
+
+
+conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+import csv
+
+
+import pandas as pd
+import pyodbc
+import random
+from datetime import datetime, timedelta
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+df = pd.read_csv('D:/uni/db/archive/Users.csv')
+
+
+df = df[df['DisplayName'].str.count(' ') == 1]
+
+
+conn = pyodbc.connect(conn_str)
+cursor = conn.cursor()
+
+
+for index, row in enumerate(df.sample(n=30000).iterrows(), 1):
+   full_name = row[1]['DisplayName']
+   first_name, last_name = full_name.split()
+   email = f"{row[1]['UserName']}@gmail.com"
+   sex = random.choice(['man', 'woman'])
+   birth_date = datetime.now() - timedelta(days=random.randint(14 * 365, 67 * 365))
+   password = ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890', k=8))
+
+
+   # Generate country code (e.g., +1 for USA)
+   country_code = '+' + ''.join(random.choices('123456789', k=2))
+   # Generate rest of the phone number
+   rest_of_number = ''.join(random.choices('0123456789', k=10))
+   phone_number = f"{country_code}{rest_of_number}"
+
+
+   cursor.execute(
+       "INSERT INTO Customer (id, first_name, last_name, email, sex, birth_date, password, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+       (index, first_name, last_name, email, sex, birth_date, password, phone_number))
+   conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+import csv
+
+
+import pandas as pd
+import pyodbc
+import random
+from datetime import datetime, timedelta
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+conn = pyodbc.connect(conn_str)
+cursor = conn.cursor()
+
+
+cursor.execute("SELECT id FROM Customer")
+customer_ids = [row[0] for row in cursor.fetchall()]
+
+
+# Randomly select 5,000 customer IDs
+selected_customer_ids = random.sample(customer_ids, 3000)
+wishlist_names = ["want", "for sister", "classics", "autumn", "history", "adventure", "mystery", "romance",
+                 "science fiction", "fantasy", "thriller", "cooking", "self-help", "travel", "fitness", "new year",
+                 "school", "art", "1", "must read"]
+# Generate wishlists for each selected customer
+for customer_id in selected_customer_ids:
+   # Decide how many wishlists to generate for this customer (1 to 5)
+   num_wishlists = random.randint(1, 5)
+
+
+   for _ in range(num_wishlists):
+       name = random.choice(wishlist_names)
+
+
+       # Generate a random last_modified_at datetime
+       last_modified_at = datetime.now() - timedelta(days=random.randint(365 * 10, 365 * 20))
+
+
+       # Insert wishlist into the table
+       cursor.execute(
+           "INSERT INTO Wishlist (customer_id, name, last_modified_at) VALUES (?, ?, ?)",
+           (customer_id, name, last_modified_at)
+       )
+       conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+import csv
+
+
+import pandas as pd
+import pyodbc
+import random
+from datetime import datetime, timedelta
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+conn = pyodbc.connect(conn_str)
+cursor = conn.cursor()
+
+
+cursor.execute("SELECT id FROM Wishlist")
+wishlist_ids = [row[0] for row in cursor.fetchall()]
+
+
+cursor.execute("SELECT id FROM Book")
+book_ids = [row[0] for row in cursor.fetchall()]
+
+
+for wishlist_id in wishlist_ids:
+   num_books = random.randint(3, 15)
+
+
+   random.shuffle(book_ids)
+
+
+   selected_book_ids = book_ids[:num_books]
+
+
+   selected_book_ids.sort()
+
+
+   for sequence_number, book_id in enumerate(selected_book_ids, start=1):
+       cursor.execute(
+           "INSERT INTO Book_Wishlist (book_id, wishlist_id, sequence_number) VALUES (?, ?, ?)",
+           (book_id, wishlist_id, sequence_number)
+       )
+       conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+import csv
+import pyodbc
+import random
+
+
+csv_file_path = 'D:/uni/db/goodreads_data.csv'
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+conn = pyodbc.connect(conn_str)
+cursor = conn.cursor()
+
+
+with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
+   reader = csv.reader(csvfile)
+   next(reader)
+   for row in reader:
+       book_title = row[1]
+       genres = [genre.strip().strip("'") for genre in row[4].strip('[]').split(',')]
+       random_genre = random.choice(genres)
+
+
+       cursor.execute("SELECT id FROM Genre WHERE name = ?", random_genre)
+       genre_id_row = cursor.fetchone()
+       if genre_id_row:
+           genre_id = genre_id_row[0]
+
+
+           cursor.execute(
+               "UPDATE Book SET genre_id = ? WHERE title = ?",
+               (genre_id, book_title)
+           )
+           conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+import csv
+import pyodbc
+
+
+csv_file_path = 'D:/uni/db/goodreads_data.csv'
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+conn = pyodbc.connect(conn_str)
+cursor = conn.cursor()
+
+
+cursor.execute("SELECT id, title FROM Book")
+books_db = {row.title: row.id for row in cursor.fetchall()}
+
+
+with open(csv_file_path, newline='', encoding='utf-8') as csvfile:
+   reader = csv.reader(csvfile)
+   next(reader)
+   for row in reader:
+       title = row[1]
+       author_names = [author.strip() for author in row[2].split(',')]
+       if title in books_db:
+           book_id = books_db[title]
+           for author_name in author_names:
+               author_parts = author_name.split(' ', 1)  # Split only the first space
+               first_name = author_parts[0]
+               last_name = author_parts[1] if len(author_parts) > 1 else ""
+
+
+               cursor.execute("SELECT id FROM Author WHERE first_name = ? AND last_name = ?", first_name, last_name)
+               author_row = cursor.fetchone()
+               if not author_row:
+                   cursor.execute("INSERT INTO Author (first_name, last_name) VALUES (?, ?)", first_name, last_name)
+                   conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+import csv
+import pyodbc
+from datetime import datetime
+import random
+
+
+csv_file_path_deliv_list = 'D:/uni/db/delivery_list.csv'
+csv_file_path_deliv_track = 'D:/uni/db/delivery_tracking.csv'
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+conn = pyodbc.connect(conn_str)
+cursor = conn.cursor()
+
+
+cursor.execute("SELECT id FROM Delivery_Service_Provider")
+delivery_service_provider_ids = [row.id for row in cursor.fetchall()]
+
+
+delivery_type_mapping = {
+   "Прибув до поштомату": 8,
+   "Видано кур'єру": 9
+}
+
+
+tracking_info = {}
+
+
+with open(csv_file_path_deliv_track, newline='', encoding='utf-8') as track_file:
+   track_reader = csv.reader(track_file)
+   next(track_reader)  # Skip header
+   for row in track_reader:
+       track_number = row[2]
+       track_description = row[1]
+       status_timestamp = datetime.strptime(row[4], '%Y-%m-%d %H:%M:%S')
+
+
+       if track_number not in tracking_info:
+           tracking_info[track_number] = []
+
+
+       tracking_info[track_number].append({'description': track_description, 'timestamp': status_timestamp})
+
+
+def determine_delivery_type(track_number):
+   if track_number in tracking_info:
+       for track_info in tracking_info[track_number]:
+           description = track_info['description']
+           for pattern, delivery_type_id in delivery_type_mapping.items():
+               if pattern in description:
+                   return delivery_type_id
+   return 7
+
+
+
+
+
+
+with open(csv_file_path_deliv_list, newline='', encoding='utf-8') as csvfile:
+   reader = csv.reader(csvfile)
+   next(reader)
+   for delivery_id, row in enumerate(reader, start=1):
+       recipient_city = row[12]
+       recipient_office = row[13]
+       estimated_delivery_str = row[3]
+       if recipient_city and recipient_office and estimated_delivery_str:
+           city_parts = recipient_city.split(',')
+           if len(city_parts) > 1:
+               region = city_parts[-1].strip()
+               city = city_parts[0].strip()
+           else:
+               region = None
+               city = recipient_city.strip()
+           try:
+               cost = round(float(row[4]), 2)
+           except ValueError:
+               cost = 35
+           try:
+               weight = round(float(row[5]), 2)
+           except ValueError:
+               weight = 0.5
+           try:
+               estimated_delivery = datetime.strptime(estimated_delivery_str, '%Y-%m-%d')
+           except ValueError:
+               # Handle invalid date format or empty date
+               print(f"Invalid estimated delivery date: {estimated_delivery_str}")
+               continue
+
+
+           percentage_for_1 = 90
+           percentage_for_2 = 5
+           percentage_for_3 = 5
+
+
+           threshold_1 = int(percentage_for_1 / 100 * 10000)
+           threshold_2 = threshold_1 + int(percentage_for_2 / 100 * 10000)
+           threshold_3 = threshold_2 + int(percentage_for_3 / 100 * 10000)
+
+
+           if delivery_id % 10000 < threshold_1:
+               delivery_service_provider_id = delivery_service_provider_ids[0]
+           elif delivery_id % 10000 < threshold_2:
+               delivery_service_provider_id = delivery_service_provider_ids[1]
+           else:
+               delivery_service_provider_id = delivery_service_provider_ids[2]
+
+
+           random_customer_id = random.randint(1, 27043)
+
+
+           cursor.execute("SELECT first_name, last_name, phone_number FROM Customer WHERE id = ?", random_customer_id)
+           recipient_data = cursor.fetchone()
+           recipient_name = f"{recipient_data.first_name} {recipient_data.last_name}"
+           recipient_phone = recipient_data.phone_number
+
+
+           cursor.execute("INSERT INTO Delivery_Address (id, region, city, address) VALUES (?, ?, ?, ?)",
+                          delivery_id, region, city, recipient_office)
+           conn.commit()
+
+
+           track_number = row[2]
+           delivery_type_id = determine_delivery_type(track_number)
+
+
+           cursor.execute(
+               "INSERT INTO Delivery (id, delivery_type_id, delivery_address_id, delivery_service_provider_id, recipient_name, recipient_phone_number, cost, weight, estimated_delivery_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+               delivery_id, delivery_type_id, delivery_id, delivery_service_provider_id, recipient_name, recipient_phone, cost,
+               weight, estimated_delivery)
+           conn.commit()
+
+
+           cursor.execute("INSERT INTO Track_Number (delivery_id, track_number) VALUES (?, ?)",
+                          delivery_id, track_number)
+           conn.commit()
+
+
+           track_number = row[2]
+
+
+           if track_number in tracking_info:
+               for idx, track_info in enumerate(tracking_info[track_number], start=1):
+                   track_id = (delivery_id * 1000) + idx
+                   track_description = track_info['description']
+                   start_date_time = track_info['timestamp']
+                   cursor.execute(
+                       "INSERT INTO Delivery_Tracking (id, delivery_id, track_description, start_date_time) VALUES (?, ?, ?, ?)",
+                       track_id, delivery_id, track_description, start_date_time)
+                   conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+
+
+import csv
+import pyodbc
+from datetime import datetime
+import random
+
+
+csv_file_path = 'D:/uni/db/orders_1.csv'
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+conn = pyodbc.connect(conn_str)
+cursor = conn.cursor()
+
+
+def get_next_delivery_id():
+   cursor.execute("SELECT TOP 1 id FROM Delivery ORDER BY NEWID()")
+   row = cursor.fetchone()
+   return row.id if row else None
+
+
+processed_order_ids = set()
+
+
+# Read order data from the CSV file and insert into the database
+with open(csv_file_path, newline='', encoding='utf-8') as order_file:
+   order_reader = csv.reader(order_file)
+   next(order_reader)  # Skip header
+   for row in order_reader:
+       if not row or not row[0].isdigit():
+           continue
+
+
+       order_id = int(row[0])
+
+
+       # Check if the order ID has been processed already
+       if order_id in processed_order_ids:
+           continue
+
+
+       processed_order_ids.add(order_id)
+
+
+       order_date_str = row[4]
+
+
+       # Generate random customer ID
+       customer_id = random.randint(1, 27043)
+
+
+       # Check if it's a repeat order for the same customer
+       cursor.execute("SELECT COUNT(*) FROM Order_ WHERE customer_id = ?", customer_id)
+       repeat_order_count = cursor.fetchone()[0]
+       user_order_number = repeat_order_count + 1
+
+
+       # Get the next delivery ID
+       delivery_id = get_next_delivery_id()
+
+
+       # Parse order date and time based on the format
+       if '-' in order_date_str:
+           order_date = datetime.strptime(order_date_str, '%m-%d-%y %H:%M')
+       elif '/' in order_date_str:
+           order_date = datetime.strptime(order_date_str, '%m/%d/%y %H:%M')
+
+
+       order_time_str = order_date_str.split()[1]
+       order_time = datetime.strptime(order_time_str, '%H:%M').time()
+
+
+       cursor.execute(
+           f"INSERT INTO [Order_] (id, customer_id, user_order_number, date, time, delivery_id) VALUES ({order_id}, {customer_id}, {user_order_number}, '{order_date}', '{order_time}', {delivery_id})"
+       )
+
+
+       conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+import csv
+import pyodbc
+import random
+
+
+csv_file_path = 'D:/uni/db/orders_1.csv'
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+conn = pyodbc.connect(conn_str)
+cursor = conn.cursor()
+
+
+
+
+# Function to get a random book ID from the Book table
+def get_random_book_id():
+   cursor.execute("SELECT TOP 1 id FROM Book ORDER BY NEWID()")
+   row = cursor.fetchone()
+   return row.id if row else None
+
+
+
+
+# Read order data from the CSV file and insert into the Book_Order table
+with open(csv_file_path, newline='', encoding='utf-8') as order_file:
+   order_reader = csv.reader(order_file)
+   next(order_reader)  # Skip header
+   for sequence_number, row in enumerate(order_reader, start=1):
+       try:
+           order_id = int(row[0])
+       except ValueError:
+           # Skip empty rows
+           continue
+
+
+       product = row[1]
+       quantity_ordered = int(row[2])
+
+
+       book_id = get_random_book_id()
+
+
+       cursor.execute("SELECT COUNT(*) FROM Book_Order WHERE order_id = ? AND book_id = ?", order_id, book_id)
+       count = cursor.fetchone()[0]
+
+
+       if count > 0:
+
+
+           continue
+
+
+       cursor.execute("SELECT price FROM Book WHERE id = ?", book_id)
+       unit_price = cursor.fetchone()[0]
+
+
+       cursor.execute(
+           "INSERT INTO Book_Order (order_id, book_id, quantity, sequence_number, unit_price) VALUES (?, ?, ?, ?, ?)",
+           order_id, book_id, quantity_ordered, sequence_number, unit_price
+       )
+
+
+       conn.commit()
+
+
+cursor.close()
+conn.close()
+
+
+
+
+import pyodbc
+import random
+import datetime
+
+
+conn_str = ("""
+DRIVER={SQL Server};
+SERVER=LAPTOP-ODO72N0N;
+DATABASE=Bookstore;
+UID=liudaminko;
+PWD=cdsnkzxjr2003;
+""")
+
+
+conn = pyodbc.connect(conn_str)
+cursor = conn.cursor()
+
+
+
+
+def get_earliest_track_time(delivery_id):
+   cursor.execute("SELECT MIN(start_date_time) FROM Delivery_Tracking WHERE delivery_id = ?", delivery_id)
+   row = cursor.fetchone()
+   return row[0] if row else None
+
+
+
+
+def calculate_packed_at(earliest_track_time):
+   # Subtract random time between 2 to 14 hours from the earliest track time
+   hours_to_subtract = random.randint(2, 14)
+   packed_at = earliest_track_time - datetime.timedelta(hours=hours_to_subtract)
+   return packed_at
+
+
+
+
+def get_random_packer_id():
+   cursor.execute("SELECT TOP 1 id FROM Packer ORDER BY NEWID()")
+   row = cursor.fetchone()
+   return row.id if row else None
+
+
+
+
+def get_all_delivery_ids():
+   cursor.execute("SELECT id FROM Delivery")
+   rows = cursor.fetchall()
+   return [row.id for row in rows]
+
+
+
+
+# Get all delivery IDs
+delivery_ids = get_all_delivery_ids()
+
+
+# Insert data into the Warehouse_Packing table for each delivery ID
+for delivery_id in delivery_ids:
+   # Get the earliest track time for the current delivery ID
+   earliest_track_time = get_earliest_track_time(delivery_id)
+
+
+   # Calculate the packed_at datetime if track time is available
+   if earliest_track_time:
+       packed_at = calculate_packed_at(earliest_track_time)
+
+
+       # Get a random packer ID
+       packer_id = get_random_packer_id()
+
+
+       # Insert data into the Warehouse_Packing table
+       cursor.execute(
+           "INSERT INTO Warehouse_Packing (delivery_id, packer_id, packed_at) VALUES (?, ?, ?)",
+           delivery_id, packer_id, packed_at
+       )
+
+
+       conn.commit()
+   else:
+       print(f"No track time found for delivery ID: {delivery_id}")
+
+
+cursor.close()
+conn.close()

@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Component
@@ -287,7 +289,7 @@ public class BookRepository {
         if (!languages.isEmpty()) {
             queryBuilder.append(" AND b.language IN (");
             for (int i = 0; i < languages.size(); i++) {
-                queryBuilder.append("'").append(languages.get(i)).append("'");
+                queryBuilder.append(languages.get(i));
                 if (i < languages.size() - 1) {
                     queryBuilder.append(", ");
                 }
@@ -295,19 +297,92 @@ public class BookRepository {
             queryBuilder.append(")");
         }
 
-        // Append ORDER BY clause
         queryBuilder.append(" ORDER BY b.id");
 
-        // Append OFFSET clause
         queryBuilder.append(" OFFSET ").append(offset).append(" ROWS ");
         queryBuilder.append("FETCH NEXT ").append(limit).append(" ROWS ONLY");
 
         String query = queryBuilder.toString();
-        System.out.println("Generated SQL Query: " + query);
 
 
         return jdbcTemplate1.query(query, new Object[]{userId},new BeanPropertyRowMapper<>(ShortInfoBook.class));
-        // Execute the query and return the result
+    }
+
+    public List<ShortInfoBook> findAllBooksByFiltersNonAuthorized(List<Long> genres, List<String> languages, List<Long> publishers, List<Long> authors, int limit, int offset) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("SELECT DISTINCT b.id, b.title, b.image_url, CONCAT(a.first_name, ' ', a.last_name) AS authors, b.price ")
+                .append("FROM Book b ")
+                .append("JOIN Book_Authors ba ON ba.book_id = b.id ")
+                .append("JOIN Author a ON a.id = ba.author_id ")
+                .append("JOIN Genre g ON g.id = b.genre_id ")
+                .append("WHERE b.is_active = 1 ");
+
+        if (!genres.isEmpty()) {
+            queryBuilder.append(" AND g.id IN (");
+            for (int i = 0; i < genres.size(); i++) {
+                queryBuilder.append(genres.get(i));
+                if (i < genres.size() - 1) {
+                    queryBuilder.append(", ");
+                }
+            }
+            queryBuilder.append(")");
+        }
+
+        if (!publishers.isEmpty()) {
+            queryBuilder.append(" AND b.publisher_id IN (");
+            for (int i = 0; i < publishers.size(); i++) {
+                queryBuilder.append(publishers.get(i));
+                if (i < publishers.size() - 1) {
+                    queryBuilder.append(", ");
+                }
+            }
+            queryBuilder.append(")");
+        }
+
+        if (!authors.isEmpty()) {
+            queryBuilder.append(" AND a.id IN (");
+            for (int i = 0; i < authors.size(); i++) {
+                queryBuilder.append(authors.get(i));
+                if (i < authors.size() - 1) {
+                    queryBuilder.append(", ");
+                }
+            }
+            queryBuilder.append(")");
+        }
+
+        if (!languages.isEmpty()) {
+            queryBuilder.append(" AND b.language IN (");
+            for (int i = 0; i < languages.size(); i++) {
+                queryBuilder.append(languages.get(i));
+                if (i < languages.size() - 1) {
+                    queryBuilder.append(", ");
+                }
+            }
+            queryBuilder.append(")");
+        }
+
+        queryBuilder.append(" ORDER BY b.id");
+
+        queryBuilder.append(" OFFSET ").append(offset).append(" ROWS ");
+        queryBuilder.append("FETCH NEXT ").append(limit).append(" ROWS ONLY");
+
+        String query = queryBuilder.toString();
+
+
+        return jdbcTemplate1.query(query, new BeanPropertyRowMapper<>(ShortInfoBook.class));
+    }
+
+    public Map<Integer, String> getBookByISBN(String isbn) {
+        String query = "SELECT id, isbn FROM Book WHERE isbn LIKE ?";
+        List<Map<String, Object>> resultList = jdbcTemplate1.queryForList(query, isbn + "%");
+
+        Map<Integer, String> bookMap = new HashMap<>();
+        for (Map<String, Object> result : resultList) {
+            Integer id = (Integer) result.get("id");
+            String isbnResult = (String) result.get("isbn");
+            bookMap.put(id, isbnResult);
+        }
+        return bookMap;
     }
 
 

@@ -27,6 +27,10 @@ public class AuthorController {
         Author author = repository.getFullAuthorInfo(authorId);
         return author;
     }
+    @GetMapping("/fullName")
+    public List<Author> getAuthorsThatMatchFullName(@RequestParam String fullName) {
+        return repository.findAuthorsThatMatchPattern(fullName);
+    }
 
     @PostMapping
     public int createAuthor(@RequestBody Author request) {

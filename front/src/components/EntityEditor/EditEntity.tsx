@@ -66,6 +66,7 @@ function EditEntity({
                 onChange={(e) => {
                   field.onChange(field.id, e.target.value);
                 }}
+                className={styles.selector}
               >
                 {field.options.map((option) => (
                   <option key={option.id} value={option.id}>
@@ -165,6 +166,7 @@ function EditEntity({
                 field.onChange(field.id, e.target.value);
                 fetchFullData(e.target.value);
               }}
+              className={styles.selector}
             >
               {field.options?.map((option) => (
                 <option key={option.id} value={option.name}>

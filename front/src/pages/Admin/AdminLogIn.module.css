@@ -4,6 +4,7 @@
     height: calc(60vh - 105px);
     gap: 32px;
     align-items: center;
+    justify-content: center;
 }
 .form {
     width: 50%;
