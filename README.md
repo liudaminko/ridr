@@ -17,4 +17,6 @@ npm install classnames
 
 npm install react-router-dom
 
+npm install react-datepicker --save
+
 code is written only by the creator of this repository, but committed from a different computer 🫠
